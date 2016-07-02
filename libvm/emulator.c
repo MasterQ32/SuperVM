@@ -18,7 +18,7 @@ bool running = true;
 bool instaquit = false;
 bool debugMode = false;
 bool visualMode = false;
-bool executionPaused = true;
+bool executionPaused = false;
 
 void swap_buffers();
 SDL_Surface *screen = NULL;
@@ -44,10 +44,27 @@ void vm_assert(int assertion, const char *msg)
 */
 uint32_t vm_syscall(spu_t *process, cmdinput_t *info)
 {
-	fprintf(stdout, "SYSCALL [%d]: (%d, %d)\n", info->info, info->input0, info->input1);
-	if (info->info == 0)
-		running = false;
-	return 0;
+	switch(info->info)
+	{
+		case 0:
+			running = false;
+			return 0;
+		case 1:
+			fprintf(stdout, "%c", info->input0);
+			return 0;
+		case 2:
+			fprintf(stdout, "%d", info->input0);
+			return 0;
+		default:
+			fprintf(
+				stdout, 
+				"SYSCALL [%d]: (%d, %d)\n", 
+				info->info, 
+				info->input0, 
+				info->input1);
+			break;
+	}
+	return -1;
 }
 
 /**
@@ -75,7 +92,7 @@ void dump_vm()
 		mainCore.flags
 	);
 
-	for (int i = 0; i < mainCore.stackPointer; i++)
+	for (int i = 0; i <= mainCore.stackPointer; i++)
 	{
 		printf(" %d", mainCore.stack[i]);
 	}
@@ -182,6 +199,12 @@ bool load_exp(const char *fileName)
 		int len = fread(sectionInRam, 1, section.length, f);
 		if (len != section.length)
 			fprintf(stderr, "Read invalid size.\n");
+		else
+			fprintf(
+				stderr, "Loaded %s to 0x%X\n",
+				section.name,
+				section.base
+			);
 	}
 
 	return true;
@@ -201,6 +224,11 @@ void run_visual_mode()
 	SDL_WM_SetCaption("DasOS Virtual Platform", NULL);
 
 	pausePicture = SDL_LoadBMP("pause.bmp");
+	
+	// Visual Mode starts with paused
+	// execution for better visualization
+	// technique
+	executionPaused = true;
 	
 	SDL_Event ev;
 	while (running)
