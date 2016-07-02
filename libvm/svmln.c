@@ -13,8 +13,10 @@
 
 #if defined(_MSC_VER)
 #include "getopt.h"
+#include <limits.h>
 #else
 #include <getopt.h>
+#include <linux/limits.h>
 #endif
 
 #include <string.h>
@@ -22,40 +24,75 @@
 
 #define DEBUG_VAL(x) // fprintf(stderr, #x " = %d\n", x)
 
+struct inputfile
+{
+	char name[PATH_MAX];
+	expsection_t section;
+	struct inputfile *next;
+};
+
+typedef struct inputfile inputfile_t;
+
+inputfile_t *files = NULL;
+inputfile_t *lastFile = NULL;
+
+void file_append(uint32_t type, char *name, uint32_t base)
+{
+	inputfile_t *file = malloc(sizeof(inputfile_t));
+	
+	strcpy(file->name, name);
+	file->next = NULL;
+	memset(&file->section, 0, sizeof(expsection_t));
+	strncpy(file->section.name, name, 31);
+	file->section.type = type;
+	file->section.base = base;
+	
+	if(lastFile == NULL) {
+		files = file;
+	}
+	else {
+		lastFile->next = file;
+	}
+	lastFile = file;
+}
+
+void clear_files()
+{
+	while(files != NULL)
+	{
+		void *tmp = files;
+		files = files->next;
+		free(tmp);
+	}
+}
+
 int main(int argc, char **argv)
 {
+	atexit(clear_files);
+	
 	char const *outfileName = "a.exp";
-	char const *codefileName = NULL;
-	char const *datafileName = NULL;
-	int memsize = 65536;
-	int codeStart = 0;
-	int dataStart = 0;
 	opterr = 0;
 	int c;
-	while ((c = getopt(argc, argv, "C:D:c:d:m:o:")) != -1)
+	
+	while ((c = getopt(argc, argv, "E:c:d:m:o:")) != -1)
 	{
 		switch (c)
 		{
-		case 'C':
-			codeStart = atoi(optarg);
-			break;
-		case 'D':
-			dataStart = atoi(optarg);
-			break;
-		case 'm':
-			memsize = atoi(optarg);
-			if (memsize <= 0) {
-				fprintf(stderr, "memsize must be larger 0.\n");
-				return 1;
+		case 'E':
+			if(lastFile == NULL) {
+				fprintf(stderr, "No current file given.\n");
+				exit(1);
 			}
+			lastFile->section.base = atoi(optarg);
+			break;
 		case 'o':
 			outfileName = optarg;
 			break;
 		case 'c':
-			codefileName = optarg;
+			file_append(0, optarg, 0);
 			break;
 		case 'd':
-			datafileName = optarg;
+			file_append(1, optarg, 0);
 			break;
 		case '?':
 			if (optopt == 'o' || optopt == 'c' || optopt == 'd')
@@ -69,16 +106,13 @@ int main(int argc, char **argv)
 			abort();
 		}
 	}
-	for (int index = optind; index < argc; index++)
-		printf("Non-option argument %s\n", argv[index]);
+
+	// for (int index = optind; index < argc; index++)
+	// printf("Non-option argument %s\n", argv[index]);
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	// fprintf(stderr, "Out:  %s\n", outfileName);
-	// fprintf(stderr, "Code: %s\n", codefileName);
-	// fprintf(stderr, "Data: %s\n", datafileName);
-
-  if(!codefileName && !datafileName)
+  if(files == NULL)
   {
     fprintf(stderr, "No input files.\n");
     exit(1);
@@ -96,8 +130,9 @@ int main(int argc, char **argv)
 	///////////////////////////////////////////////////////////////////////////////
 
 	int numSections = 0;
-	if (codefileName != NULL) numSections++;
-	if (datafileName != NULL) numSections++;
+	inputfile_t *it;
+	for(it = files; it != NULL; it = it->next)
+		numSections += 1;
 
 	///////////////////////////////////////////////////////////////////////////////
 
@@ -113,28 +148,17 @@ int main(int argc, char **argv)
 
 	DEBUG_VAL(fileHeader.posSections);
 
-	expsection_t codeSection = { 0, codeStart };
-	strcpy(codeSection.name, ".code");
+	for(it = files; it != NULL; it = it->next)
+		fwrite(&it->section, sizeof(expsection_t), 1, f);
 
-	expsection_t dataSection = { 1, dataStart };
-	strcpy(dataSection.name, ".data");
-
-	DEBUG_VAL(codeSection.base);
-	DEBUG_VAL(dataSection.base);
-
-	if (codefileName != NULL)
-		fwrite(&codeSection, sizeof(expsection_t), 1, f);
-	if (datafileName != NULL)
-		fwrite(&dataSection, sizeof(expsection_t), 1, f);
-
-	if (codefileName != NULL)
+	for(it = files; it != NULL; it = it->next)
 	{
-		codeSection.start = ftell(f);
+		it->section.start = ftell(f);
 
-		FILE *fc = fopen(codefileName, "rb");
+		FILE *fc = fopen(it->name, "rb");
 		if (fc == NULL)
 		{
-			fprintf(stderr, "Could not open %s\n", codefileName);
+			fprintf(stderr, "Could not open %s\n", it->name);
 			fclose(f);
 			return 1;
 		}
@@ -145,51 +169,21 @@ int main(int argc, char **argv)
 			size_t len = fread(buffer, 1, 4096, fc);
 			if (len > 0)
 				fwrite(buffer, 1, len, f);
-			codeSection.length += (uint32_t)len;
+			it->section.length += (uint32_t)len;
 		}
+		
+		DEBUG_VAL(it->section.length);
 
 		fclose(fc);
-
-		DEBUG_VAL(codeSection.start);
-		DEBUG_VAL(codeSection.length);
 	}
-	if (datafileName != NULL)
-	{
-		dataSection.start = ftell(f);
-
-		FILE *fc = fopen(datafileName, "rb");
-		if (fc == NULL)
-		{
-			fprintf(stderr, "Could not open %s\n", datafileName);
-			fclose(f);
-			return 1;
-		}
-
-		char buffer[4096];
-		while (!feof(fc))
-		{
-			size_t len = fread(buffer, 1, 4096, fc);
-			if (len > 0)
-				fwrite(buffer, 1, len, f);
-			dataSection.length += (uint32_t)len;
-		}
-
-		fclose(fc);
-
-		DEBUG_VAL(dataSection.start);
-		DEBUG_VAL(dataSection.length);
-	}
-
 
 	// Now write the header again...
 	rewind(f);
 	fwrite(&fileHeader, sizeof(expfile_t), 1, f);
 
 	fseek(f, fileHeader.posSections, SEEK_SET);
-	if (codefileName != NULL)
-		fwrite(&codeSection, sizeof(expsection_t), 1, f);
-	if (datafileName != NULL)
-		fwrite(&dataSection, sizeof(expsection_t), 1, f);
+	for(it = files; it != NULL; it = it->next)
+		fwrite(&it->section, sizeof(expsection_t), 1, f);
 
 	///////////////////////////////////////////////////////////////////////////////
 
