@@ -219,7 +219,8 @@ void assemble()
 			if(listing)
 			{
 				if(reqPatch) fprintf(listing, "\t; Requires patch:\n");
-				fprintf(listing, "\t", yytext);
+				if(!disasmOptions.outputAddresses)
+					fprintf(listing, "\t", yytext);
 				disassemble(&current, 1, entryPoint, listing);
 			}
 			
@@ -238,10 +239,13 @@ int main(int argc, char **argv)
 	listing = NULL;
 	
 	int c;
-	while ((c = getopt(argc, argv, "o:e:sl:L")) != -1)
+	while ((c = getopt(argc, argv, "o:e:sl:Ln")) != -1)
 	{
 		switch (c)
 		{
+		case 'n':
+			disasmOptions.outputAddresses = true;
+			break;
 		case 'e':
 			entryPoint = atoi(optarg);
 			break;
@@ -262,6 +266,7 @@ int main(int argc, char **argv)
 				fprintf(stderr, "Could not open %s.\n", optarg);
 				exit(1);
 			}
+			break;
 		}
 		case 'o':
 		{

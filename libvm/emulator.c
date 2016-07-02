@@ -199,12 +199,6 @@ bool load_exp(const char *fileName)
 		int len = fread(sectionInRam, 1, section.length, f);
 		if (len != section.length)
 			fprintf(stderr, "Read invalid size.\n");
-		else
-			fprintf(
-				stderr, "Loaded %s to 0x%X\n",
-				section.name,
-				section.base
-			);
 	}
 
 	return true;
@@ -365,7 +359,7 @@ int main(int argc, char **argv)
   
 	for (int index = optind; index < argc; index++)
 	{
-		fprintf(stdout, "Loading %s...\n", argv[index]);
+		// fprintf(stderr, "Loading %s...\n", argv[index]);
 		if(load_exp(argv[index]) == 0) {
 			fprintf(stderr, "%s not found.\n", argv[index]);
 			exit(1);

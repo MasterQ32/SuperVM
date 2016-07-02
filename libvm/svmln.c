@@ -20,7 +20,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#define DEBUG_VAL(x) fprintf(stderr, #x " = %d\n", x)
+#define DEBUG_VAL(x) // fprintf(stderr, #x " = %d\n", x)
 
 int main(int argc, char **argv)
 {
