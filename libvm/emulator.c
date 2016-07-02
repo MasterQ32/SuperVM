@@ -18,9 +18,11 @@ bool running = true;
 bool instaquit = false;
 bool debugMode = false;
 bool visualMode = false;
+bool executionPaused = true;
 
 void swap_buffers();
 SDL_Surface *screen = NULL;
+SDL_Surface *pausePicture = NULL;
 
 /**
 * An assertion the VM does.
@@ -85,7 +87,9 @@ void update_vm()
 {
 	vm_step_process(&mainCore);
 
-	if(debugMode) dump_vm();
+	// Debug mode is for live debugging,
+	// paused execution is for manual debugging 
+	if(debugMode || executionPaused) dump_vm();
 }
 
 void update_input(SDL_Event *ev)
@@ -97,8 +101,17 @@ void update_input(SDL_Event *ev)
 		running = false;
 		break;
 	case SDL_KEYDOWN:
-		if(ev->key.keysym.sym == SDLK_ESCAPE)
-			running = false;
+		switch(ev->key.keysym.sym)
+		{
+			case SDLK_ESCAPE: running = false; return;
+			case SDLK_F5: executionPaused = !executionPaused; return;
+			case SDLK_F10: 
+				if(executionPaused) {
+					update_vm();
+					swap_buffers();
+				}
+				return;
+		}
 		break;
 	}
 }
@@ -186,6 +199,8 @@ void run_visual_mode()
 
 	screen = SDL_SetVideoMode(640, 480, 32, SDL_DOUBLEBUF);
 	SDL_WM_SetCaption("DasOS Virtual Platform", NULL);
+
+	pausePicture = SDL_LoadBMP("pause.bmp");
 	
 	SDL_Event ev;
 	while (running)
@@ -195,14 +210,16 @@ void run_visual_mode()
 			update_input(&ev);
 		}
 
-		uint32_t start = SDL_GetTicks();
-
-		do {
-			for (int i = 0; i < executionsPerSimulationStep && running; i++)
-			{
-				update_vm();
-			}
-		} while (running && (SDL_GetTicks() - start) <= 32);
+		if(!executionPaused)
+		{
+			uint32_t start = SDL_GetTicks();
+			do {
+				for (int i = 0; i < executionsPerSimulationStep && running; i++)
+				{
+					update_vm();
+				}
+			} while (running && (SDL_GetTicks() - start) <= 32);
+		}
 
     if(autoSwapBuffers) swap_buffers();
 	}
@@ -242,7 +259,27 @@ void swap_buffers()
     (uint8_t*)mainCore.memory + 4096,
     screen->h * screen->pitch);
   SDL_UnlockSurface(screen);
-  
+	
+	if(executionPaused)
+	{
+		SDL_Rect target = {
+			4, 4, 10, 24,
+		};
+		SDL_BlitSurface(
+			pausePicture,
+			NULL,
+			screen,
+			&target);
+		target = (SDL_Rect){
+			18, 4, 10, 24,
+		};
+		SDL_BlitSurface(
+			pausePicture,
+			NULL,
+			screen,
+			&target);
+	}
+ 
   SDL_Flip(screen);
 }
 
