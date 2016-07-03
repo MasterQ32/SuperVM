@@ -33,7 +33,7 @@ void vm_assert(int assertion, const char *msg)
 {
 	if (assertion)
 		return;
-	printf("Assertion failed: %s\n", msg);
+	fprintf(stderr, "Assertion failed: %s\n", msg);
 	running = false;
 }
 
@@ -57,7 +57,7 @@ uint32_t vm_syscall(spu_t *process, cmdinput_t *info)
 			return 0;
 		default:
 			fprintf(
-				stdout, 
+				stderr, 
 				"SYSCALL [%d]: (%d, %d)\n", 
 				info->info, 
 				info->input0, 
@@ -77,6 +77,13 @@ uint32_t vm_hwio(spu_t *process, cmdinput_t *info)
   switch(info->info)
   {
     case 1: swap_buffers(); break;
+		default:
+			fprintf(
+				stderr, 
+				"HWIO [%d]: (%d, %d)\n", 
+				info->info, 
+				info->input0, 
+				info->input1);
   }
 	return 0;
 }
@@ -85,7 +92,7 @@ spu_t mainCore;
 
 void dump_vm()
 {
-	printf(
+	fprintf(stderr,
 		"cp=%8X bp=%3d f=%1X [",
 		mainCore.codePointer,
 		mainCore.basePointer,
@@ -94,10 +101,10 @@ void dump_vm()
 
 	for (int i = 0; i <= mainCore.stackPointer; i++)
 	{
-		printf(" %d", mainCore.stack[i]);
+		fprintf(stderr," %d", mainCore.stack[i]);
 	}
 
-	printf(" ]\n");
+	fprintf(stderr," ]\n");
 }
 
 void update_vm()
@@ -121,12 +128,30 @@ void update_input(SDL_Event *ev)
 		switch(ev->key.keysym.sym)
 		{
 			case SDLK_ESCAPE: running = false; return;
-			case SDLK_F5: executionPaused = !executionPaused; return;
+			case SDLK_F5:
+				executionPaused = !executionPaused; 
+				swap_buffers();
+				return;
 			case SDLK_F10: 
 				if(executionPaused) {
 					update_vm();
 					swap_buffers();
 				}
+				return;
+			case SDLK_1:
+				mainCore.interrupt = 1;
+				return;
+			case SDLK_2:
+				mainCore.interrupt = 2;
+				return;
+			case SDLK_3:
+				mainCore.interrupt = 3;
+				return;
+			case SDLK_4:
+				mainCore.interrupt = 4;
+				return;
+			case SDLK_5:
+				mainCore.interrupt = 5;
 				return;
 		}
 		break;
@@ -148,7 +173,9 @@ void initialize_vm()
 	mainCore.codePointer = 0;
 	mainCore.stackPointer = 0;
 	mainCore.basePointer = 0;
-	mainCore.flags = 0;
+	mainCore.flags = VM_FLAG_IE;
+	
+	mainCore.interrupt = 0;
 
 	// Clear stack
 	memset(mainCore.stack, 0, VM_STACKSIZE * sizeof(uint32_t));
@@ -223,6 +250,8 @@ void run_visual_mode()
 	// execution for better visualization
 	// technique
 	executionPaused = true;
+	
+	swap_buffers();
 	
 	SDL_Event ev;
 	while (running)

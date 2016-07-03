@@ -71,8 +71,9 @@ extern "C" {
 #define VM_OUTPUT_JUMP    2
 #define VM_OUTPUT_JUMPR   3
 
-#define VM_FLAG_Z (1<<0)
-#define VM_FLAG_N (1<<1)
+#define VM_FLAG_Z  (1<<0)
+#define VM_FLAG_N  (1<<1)
+#define VM_FLAG_IE (1<<2)
 
 struct instruction
 {
@@ -92,7 +93,7 @@ static_assert(offsetof(struct instruction, argument) == 4, "Argument must be  mu
 
 struct spu
 {
-	struct instruction *code;            // Pointer to the first instruction
+	struct instruction *code;     // Pointer to the first instruction
 	uint32_t codeLength;          // length of the code in instructions
 
 	uint32_t codePointer;         // code pointer register
@@ -104,6 +105,8 @@ struct spu
 	void *memory;                 // Point to the base linear address
 	uint32_t memorySize;          // Size of the memory in bytes.
 
+	uint32_t interrupt;           // If != 0 then the next execution will trigger an interrupt.
+	
 	uint32_t stack[VM_STACKSIZE]; // The stack of the SPU.
 };
 

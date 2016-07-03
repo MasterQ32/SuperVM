@@ -143,6 +143,20 @@ static uint32_t cmd_math(cmdinput_t *info)
 int vm_step_process(spu_t *process)
 {
 	vm_assert(process != NULL, "process must not be NULL.");
+	
+	// Check if interrupts are enabled and we got one
+	if((process->flags & VM_FLAG_IE) && (process->interrupt > 0))
+	{		
+		// On interrupt, push return address
+		vm_push(process, process->codePointer);
+	
+		// Force Jump to the interrupt handler.
+		process->codePointer = process->interrupt;
+	
+		// Reset triggered interrupt
+		process->interrupt = 0;
+	}
+	
 	instruction_t instr = process->code[process->codePointer++];
 
 	int exec = 1;
@@ -227,7 +241,8 @@ int vm_step_process(spu_t *process)
 		switch(instr.flags)
 		{
 			case VM_FLAG_YES:
-				process->flags = 0;
+				// Mask out lower flags
+				process->flags &= ~(VM_FLAG_Z | VM_FLAG_N);
 				if(output == 0)
 					process->flags |= VM_FLAG_Z;
 				else if((output & (1<<31)) != 0)
