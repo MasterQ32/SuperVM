@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+#include <limits.h>
+
 static uint32_t cmd_copy(cmdinput_t *info)
 {
 	return info->input0;
@@ -78,6 +80,26 @@ static uint32_t cmd_set(spu_t *p, cmdinput_t *info)
 	return p->stack[p->basePointer + makeSigned(info->input0)] = info->input1;
 }
 
+static uint32_t rotl32 (uint32_t value, unsigned int count) {
+    const unsigned int mask = (CHAR_BIT*sizeof(value)-1);
+    count &= mask;
+    return (value<<count) | (value>>( (-count) & mask ));
+}
+
+static uint32_t rotr32 (uint32_t value, unsigned int count) {
+    const unsigned int mask = (CHAR_BIT*sizeof(value)-1);
+    count &= mask;
+    return (value>>count) | (value<<( (-count) & mask ));
+}
+
+static int arithmeticRightShift(uint32_t X, int n) {
+	int32_t x = X;
+	if (x < 0 && n > 0)
+			return (uint32_t)(x >> n | ~(~0U >> n));
+	else
+			return (uint32_t)(x >> n);
+}
+
 static uint32_t cmd_math(cmdinput_t *info)
 {
 	switch(info->info)
@@ -95,6 +117,25 @@ static uint32_t cmd_math(cmdinput_t *info)
 		S(VM_MATH_XOR, ^)
 #undef S
 		case VM_MATH_NOT: return ~info->input0; break;
+		
+		// Rotating Bit Shift Left	input1 ⊲ input0
+		case VM_MATH_ROL: return rotl32(info->input1, info->input0);
+		
+		// Rotating Bit Shift Right	input1 ⊳ input0
+		case VM_MATH_ROR: return rotr32(info->input1, info->input0);
+		
+		// Arithmetic Bit Shift Left	input1 ≺ input0
+		case VM_MATH_ASL: return (info->input1 << info->input1); 
+		
+		// Arithmetic Bit Shift Right	input1 ≻ input0
+		case VM_MATH_ASR: return arithmeticRightShift(info->input1, info->input0); 
+		
+		// Logic Bit Shift Left	input1 « input0
+		case VM_MATH_SHL: return (info->input1 << info->input1); 
+		
+		// Logic Bit Shift Right	input1 » input0
+		case VM_MATH_SHR: return (info->input1 >> info->input0);
+		
 		default: vm_assert(0, "Invalid instruction: MATH command not defined."); return -1;
 	}
 }
