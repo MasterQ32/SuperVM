@@ -23,17 +23,16 @@ _start:
 	; Print a '1'
 ;	int 1
 	
-;  push 0x000044 ; dark blue
-;	cpget
-;	jmp @cls
-;	hwio [ci:1] ; refresh screen
-;  drop 
+  push 0x000044 ; dark blue
+	cpget
+	jmp @cls
+  drop 
 	
-	push 100 ; height
-	push 65  ; width
+	push 92 ; height
+	push 92  ; width
 	push 200 ; y
 	push 50  ; x
-	push 0x12D035
+	push 0x12D034
 	cpget
 	jmp @blit24
 	drop
@@ -41,6 +40,21 @@ _start:
 	drop
 	drop
 	drop
+
+	push 92 ; height
+	push 92  ; width
+	push 150 ; y
+	push 200  ; x
+	push 0x12D034
+	cpget
+	jmp @blit24
+	drop
+	drop
+	drop
+	drop
+	drop
+	
+	hwio [ci:1] ; refresh screen
 	
 	syscall
 	
