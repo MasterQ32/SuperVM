@@ -125,13 +125,13 @@ static uint32_t cmd_math(cmdinput_t *info)
 		case VM_MATH_ROR: return rotr32(info->input1, info->input0);
 		
 		// Arithmetic Bit Shift Left	input1 ≺ input0
-		case VM_MATH_ASL: return (info->input1 << info->input1); 
+		case VM_MATH_ASL: return (info->input1 << info->input0);
 		
 		// Arithmetic Bit Shift Right	input1 ≻ input0
 		case VM_MATH_ASR: return arithmeticRightShift(info->input1, info->input0); 
 		
 		// Logic Bit Shift Left	input1 « input0
-		case VM_MATH_SHL: return (info->input1 << info->input1); 
+		case VM_MATH_SHL: return (info->input1 << info->input0);
 		
 		// Logic Bit Shift Right	input1 » input0
 		case VM_MATH_SHR: return (info->input1 >> info->input0);
@@ -313,9 +313,6 @@ uint32_t vm_peek(spu_t *process)
 	vm_assert(process != NULL, "process must not be NULL.");
 	return process->stack[process->stackPointer];
 }
-
-
-
 
 
 uint8_t vm_read_byte(spu_t *process, uint32_t address)
