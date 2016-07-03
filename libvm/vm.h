@@ -46,6 +46,9 @@ extern "C" {
 #define VM_CMD_SPSET    10
 #define VM_CMD_SYSCALL  11
 #define VM_CMD_HWIO     12
+#define VM_CMD_INT      13
+#define VM_CMD_SEI      14
+#define VM_CMD_CLI      15
 
 #define VM_MATH_ADD 0
 #define VM_MATH_SUB 1
@@ -86,7 +89,7 @@ struct instruction
 	unsigned int flags : 1;
 	unsigned int output : 2;
 	uint32_t     argument;
-} VM_PACKED_STRUCT ;
+} VM_PACKED_STRUCT;
 
 static_assert(sizeof(struct instruction) == 8, "Instruction must be 8 bytes large.");
 static_assert(offsetof(struct instruction, argument) == 4, "Argument must be  must be 8 bytes large.");

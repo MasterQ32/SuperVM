@@ -2,14 +2,11 @@
 ; Interrupts
 ;
 jmp @_start
-jmp @interrupt0
 jmp @interrupt1
 jmp @interrupt2
 jmp @interrupt3
 jmp @interrupt4
 jmp @interrupt5
-jmp @interrupt6
-jmp @interrupt7
 
 ;
 ; Entry point
@@ -20,6 +17,8 @@ _start:
 	cpget
 	jmp @puts
 	drop
+	
+	int 1
 
 _loop:
 	
@@ -38,9 +37,6 @@ _loop:
 	jmp @_loop
 	syscall
 
-interrupt0:
-	syscall [ci:1] [i0:arg] '0'
-	jmp @interrupt
 interrupt1:
 	syscall [ci:1] [i0:arg] '1'
 	jmp @interrupt
@@ -55,12 +51,6 @@ interrupt4:
 	jmp @interrupt
 interrupt5:
 	syscall [ci:1] [i0:arg] '5'
-	jmp @interrupt
-interrupt6:
-	syscall [ci:1] [i0:arg] '6'
-	jmp @interrupt
-interrupt7:
-	syscall [ci:1] [i0:arg] '7'
 	jmp @interrupt
 	
 interrupt:

@@ -140,6 +140,23 @@ static uint32_t cmd_math(cmdinput_t *info)
 	}
 }
 
+static uint32_t cmd_int(spu_t *p, cmdinput_t *info)
+{
+	return p->interrupt = info->input0;
+}
+
+static uint32_t cmd_sei(spu_t *p, cmdinput_t *info)
+{
+	p->flags |= VM_FLAG_IE;
+	return 0;
+}
+
+static uint32_t cmd_cli(spu_t *p, cmdinput_t *info)
+{
+	p->flags &= ~VM_FLAG_IE;
+	return 0;
+}
+
 int vm_step_process(spu_t *process)
 {
 	vm_assert(process != NULL, "process must not be NULL.");
@@ -235,6 +252,9 @@ int vm_step_process(spu_t *process)
 			case VM_CMD_CPGET: output = cmd_cpget(process, &info); break;
 			case VM_CMD_GET: output = cmd_get(process, &info); break;
 			case VM_CMD_SET: output = cmd_set(process, &info); break;
+			case VM_CMD_INT: output = cmd_int(process, &info); break;
+			case VM_CMD_SEI: output = cmd_sei(process, &info); break;
+			case VM_CMD_CLI: output = cmd_cli(process, &info); break;
 			default: vm_assert(0, "Invalid instruction: command undefined.");
 		}
 		
