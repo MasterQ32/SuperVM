@@ -173,7 +173,7 @@ void initialize_vm()
 	mainCore.codePointer = 0;
 	mainCore.stackPointer = 0;
 	mainCore.basePointer = 0;
-	mainCore.flags = VM_FLAG_IE;
+	mainCore.flags = 0;
 	
 	mainCore.interrupt = 0;
 

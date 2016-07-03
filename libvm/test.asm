@@ -13,6 +13,8 @@ jmp @interrupt5
 ;
 _start:
 
+	sei
+
 	push 0x1000
 	cpget
 	jmp @puts
@@ -75,8 +77,6 @@ puts_stop:
 	spset
 	bpset
 	ret
-
-	
 
 cls:
 	bpget
