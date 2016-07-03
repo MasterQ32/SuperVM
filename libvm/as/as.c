@@ -184,7 +184,17 @@ void assemble()
 						current.argument = (uint32_t)strtol(yytext + 2, NULL, 2);
 						break;
 					case TOK_CHAR:
-						current.argument = (uint32_t)yytext[1];
+						if(yytext[1] == '\\') {
+							switch(yytext[2]) {
+								case 'n': current.argument = '\n'; break;
+								case 'r': current.argument = '\r'; break;
+								case 't': current.argument = '\t'; break;
+								case '\'': current.argument = '\''; break;
+								case '\"': current.argument = '\"'; break;
+							}
+						} else {
+							current.argument = (uint32_t)yytext[1];
+						}
 						break;
 					case TOK_REFERENCE:
 					{

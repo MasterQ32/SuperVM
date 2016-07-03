@@ -14,7 +14,7 @@ mnemonic    [a-zA-Z]+
 labelname   [a-zA-Z0-9_]+
 label       {labelname}":"
 mod         \[[^\]]+\]
-character   "'"."'"
+character   "'""\\"?."'"
 ref         @{labelname}
 %%
 {comment}				;
