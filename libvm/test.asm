@@ -13,15 +13,37 @@ jmp @interrupt5
 ;
 _start:
 
-	sei
+;	sei
 
-	push 0x1000
+;	push 0x1000
+;	cpget
+;	jmp @puts
+;	drop
+	
+	; Print a '1'
+;	int 1
+	
+;  push 0x000044 ; dark blue
+;	cpget
+;	jmp @cls
+;	hwio [ci:1] ; refresh screen
+;  drop 
+	
+	push 100 ; height
+	push 65  ; width
+	push 200 ; y
+	push 50  ; x
+	push 0x12D035
 	cpget
-	jmp @puts
+	jmp @blit24
+	drop
+	drop
+	drop
+	drop
 	drop
 	
-	int 1
-
+	syscall
+	
 _loop:
 	
   push 0xFFFF00
@@ -73,32 +95,6 @@ puts_copy:
 	[ex(z)=0] jmp @puts_copy
 puts_stop:
 	drop
-	bpget
-	spset
-	bpset
-	ret
-
-cls:
-	bpget
-	spget
-	bpset
-	push 0
-cls_copy:
-	dup
-	cmp 1228800 ; 640*480*4 screen size
-	[ex(z)=1] jmp @cls_stop
-	
-	get -2 ; Get color argument
-	get 1  ; Get iterator
-	[i0:arg] add 4096 ; Add screen buffer offset
-	
-	storei [ci:2] ; Write 32bit value
-	
-	; Increase counter
-	[i0:arg] add 4
-	jmp @cls_copy
-
-cls_stop:
 	bpget
 	spset
 	bpset
