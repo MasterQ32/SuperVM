@@ -10,7 +10,7 @@ _start:
 	[i0:pop] syscall [ci:2]
 	[i0:arg] syscall [ci:1] '\n'
 
-	push 1000;ms
+	push 1;ms
 	out 0x10002
 
 	sei
@@ -20,10 +20,10 @@ loop:
 
 	syscall
 increment:
-	load 0x4000
+	load32 0x4000
 	[i0:arg] add 1
 	[i0:peek] syscall [ci:2]
 	[i0:arg] syscall [ci:1] 's'
 	[i0:arg] syscall [ci:1] '\n'
-	store 0x4000
+	store32 0x4000
 	ret

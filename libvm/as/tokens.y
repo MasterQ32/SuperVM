@@ -10,7 +10,7 @@ hexdigit    [0-9a-fA-F]
 intnum			-?{digit}+
 hexnum			"0x"{hexdigit}+
 binnum      "0b"[01]+
-mnemonic    [a-zA-Z]+
+mnemonic    [a-zA-Z0-9]+
 labelname   [a-zA-Z0-9_]+
 label       {labelname}":"
 mod         \[[^\]]+\]
