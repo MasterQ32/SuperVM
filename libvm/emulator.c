@@ -2,6 +2,8 @@
 
 #include "vm.h"
 #include "exp.h"
+#include "devices/device.h"
+#include "devices/timer.h"
 
 #include <stdbool.h>
 
@@ -14,6 +16,8 @@
 #include <getopt.h>
 #endif
 
+#define DEVICE_COUNT 32
+
 bool running = true;
 bool instaquit = false;
 bool debugMode = false;
@@ -23,6 +27,16 @@ bool executionPaused = false;
 void swap_buffers();
 SDL_Surface *screen = NULL;
 SDL_Surface *pausePicture = NULL;
+
+struct deviceconfig
+{
+	uint32_t interruptBase;
+};
+
+typedef struct deviceconfig deviceconfig_t;
+
+device_t *devices[DEVICE_COUNT];
+deviceconfig_t deviceConfigs[DEVICE_COUNT];
 
 /**
 * An assertion the VM does.
@@ -44,25 +58,25 @@ void vm_assert(int assertion, const char *msg)
 */
 uint32_t vm_syscall(spu_t *process, cmdinput_t *info)
 {
-	switch(info->info)
+	switch (info->info)
 	{
-		case 0:
-			running = false;
-			return 0;
-		case 1:
-			fprintf(stdout, "%c", info->input0);
-			return 0;
-		case 2:
-			fprintf(stdout, "%d", info->input0);
-			return 0;
-		default:
-			fprintf(
-				stderr, 
-				"SYSCALL [%d]: (%d, %d)\n", 
-				info->info, 
-				info->input0, 
-				info->input1);
-			break;
+	case 0:
+		running = false;
+		return 0;
+	case 1:
+		fprintf(stdout, "%c", info->input0);
+		return 0;
+	case 2:
+		fprintf(stdout, "%d", info->input0);
+		return 0;
+	default:
+		fprintf(
+			stderr,
+			"SYSCALL [%d]: (%d, %d)\n",
+			info->info,
+			info->input0,
+			info->input1);
+		break;
 	}
 	return -1;
 }
@@ -74,21 +88,62 @@ uint32_t vm_syscall(spu_t *process, cmdinput_t *info)
 */
 uint32_t vm_hwio(spu_t *process, cmdinput_t *info)
 {
-  switch(info->info)
-  {
-    case 1: swap_buffers(); break;
-		default:
-			fprintf(
-				stderr, 
-				"HWIO [%d]: (%d, %d)\n", 
-				info->info, 
-				info->input0, 
-				info->input1);
-  }
+	// input1:  data
+	// input0:  global register
+	// cmdinfo: 0=read, 1=write
+
+	// get IO device
+	uint32_t deviceId = (info->input0 >> 16) & 0xFFFF;
+	uint32_t regNum = (info->input0) & 0xFFFF;
+
+	if (deviceId >= DEVICE_COUNT || devices[deviceId] == NULL)
+	{
+		// Invalid device
+		fprintf(stderr, "Device %d not found.\n", deviceId);
+		return -1;
+	}
+
+	device_t *device = devices[deviceId];
+	if (info->info)
+	{
+		device->write(device, regNum, info->input1);
+		return info->input1;
+	}
+	else
+	{
+		return device->read(device, regNum);
+	}
+
+	/*
+	switch (info->info)
+	{
+	case 1: swap_buffers(); break;
+	default:
+		fprintf(
+			stderr,
+			"HWIO [%d]: (%d, %d)\n",
+			info->info,
+			info->input0,
+			info->input1);
+	}
 	return 0;
+	*/
 }
 
 spu_t mainCore;
+
+void device_interrupt_callback(struct device *device, uint32_t interrupt)
+{
+	// TODO: Add interrupt base
+
+	// TODO: think about it! :D
+	// Ist_das_alles.avi
+
+	// fprintf(stderr, "INTR[%s,%d]\n", device->name, interrupt);
+
+	deviceconfig_t *config = device->tagPtr;
+	mainCore.interrupt = config->interruptBase + interrupt;
+}
 
 void dump_vm()
 {
@@ -97,62 +152,74 @@ void dump_vm()
 		mainCore.codePointer,
 		mainCore.basePointer,
 		mainCore.flags
-	);
+		);
 
-	for (int i = 0; i <= mainCore.stackPointer; i++)
+	for (uint32_t i = 0; i <= mainCore.stackPointer; i++)
 	{
-		fprintf(stderr," %d", mainCore.stack[i]);
+		fprintf(stderr, " %d", mainCore.stack[i]);
 	}
 
-	fprintf(stderr," ]\n");
+	fprintf(stderr, " ]\n");
 }
 
 void update_vm()
 {
+	int i;
+
+	// first, step all the devices
+	for (i = 0; i < DEVICE_COUNT; i++)
+	{
+		device_t *dev = devices[i];
+		if (dev == NULL || dev->update == NULL)
+			continue;
+		dev->update(dev);
+	}
+
+	// then go for the main core
 	vm_step_process(&mainCore);
 
 	// Debug mode is for live debugging,
 	// paused execution is for manual debugging 
-	if(debugMode || executionPaused) dump_vm();
+	if (debugMode || executionPaused) dump_vm();
 }
 
 void update_input(SDL_Event *ev)
 {
 	switch (ev->type)
 	{
-	case SDL_QUIT: 
-    instaquit = true;
+	case SDL_QUIT:
+		instaquit = true;
 		running = false;
 		break;
 	case SDL_KEYDOWN:
-		switch(ev->key.keysym.sym)
+		switch (ev->key.keysym.sym)
 		{
-			case SDLK_ESCAPE: running = false; return;
-			case SDLK_F5:
-				executionPaused = !executionPaused; 
+		case SDLK_ESCAPE: running = false; return;
+		case SDLK_F5:
+			executionPaused = !executionPaused;
+			swap_buffers();
+			return;
+		case SDLK_F10:
+			if (executionPaused) {
+				update_vm();
 				swap_buffers();
-				return;
-			case SDLK_F10: 
-				if(executionPaused) {
-					update_vm();
-					swap_buffers();
-				}
-				return;
-			case SDLK_1:
-				mainCore.interrupt = 1;
-				return;
-			case SDLK_2:
-				mainCore.interrupt = 2;
-				return;
-			case SDLK_3:
-				mainCore.interrupt = 3;
-				return;
-			case SDLK_4:
-				mainCore.interrupt = 4;
-				return;
-			case SDLK_5:
-				mainCore.interrupt = 5;
-				return;
+			}
+			return;
+		case SDLK_1:
+			mainCore.interrupt = 1;
+			return;
+		case SDLK_2:
+			mainCore.interrupt = 2;
+			return;
+		case SDLK_3:
+			mainCore.interrupt = 3;
+			return;
+		case SDLK_4:
+			mainCore.interrupt = 4;
+			return;
+		case SDLK_5:
+			mainCore.interrupt = 5;
+			return;
 		}
 		break;
 	}
@@ -161,24 +228,29 @@ void update_input(SDL_Event *ev)
 void initialize_vm()
 {
 	// Initialize memory
-  mainCore.memoryBase = 0x00; // Linear memory, start at 0x00
-  mainCore.memorySize = 0x4000000; // 64 MB;
+	mainCore.memoryBase = 0x00; // Linear memory, start at 0x00
+	mainCore.memorySize = 0x4000000; // 64 MB;
 	mainCore.memory = malloc(mainCore.memorySize);
 
 	// Initialize code execution
 	mainCore.code = mainCore.memory;
 	mainCore.codeLength = mainCore.memorySize / sizeof(instruction_t);
-	
+
 	// Setup registers
 	mainCore.codePointer = 0;
 	mainCore.stackPointer = 0;
 	mainCore.basePointer = 0;
 	mainCore.flags = 0;
-	
+
 	mainCore.interrupt = 0;
 
 	// Clear stack
 	memset(mainCore.stack, 0, VM_STACKSIZE * sizeof(uint32_t));
+
+	// Timer Device with IO Base 0x10000
+	devices[1] = timer_create();
+	deviceConfigs[1].interruptBase = 1;
+	devices[1]->tagPtr = &deviceConfigs[1];
 }
 
 bool load_exp(const char *fileName)
@@ -219,7 +291,7 @@ bool load_exp(const char *fileName)
 
 		fseek(f, fileHeader.posSections + i * sizeof(expsection_t), SEEK_SET);
 		fread(&section, 1, sizeof(expsection_t), f);
-		
+
 		fseek(f, section.start, SEEK_SET);
 
 		uint8_t *sectionInRam = (uint8_t*)mainCore.memory + section.base;
@@ -245,14 +317,14 @@ void run_visual_mode()
 	SDL_WM_SetCaption("DasOS Virtual Platform", NULL);
 
 	pausePicture = SDL_LoadBMP("pause.bmp");
-	
+
 	// Visual Mode starts with paused
 	// execution for better visualization
 	// technique
 	executionPaused = true;
-	
+
 	swap_buffers();
-	
+
 	SDL_Event ev;
 	while (running)
 	{
@@ -261,7 +333,7 @@ void run_visual_mode()
 			update_input(&ev);
 		}
 
-		if(!executionPaused)
+		if (!executionPaused)
 		{
 			uint32_t start = SDL_GetTicks();
 			do {
@@ -272,15 +344,15 @@ void run_visual_mode()
 			} while (running && (SDL_GetTicks() - start) <= 32);
 		}
 
-    if(autoSwapBuffers) swap_buffers();
+		if (autoSwapBuffers) swap_buffers();
 	}
 
-  if(instaquit)
-    return;
-  
-  // Draw the current VRAM state
-  swap_buffers();
-  
+	if (instaquit)
+		return;
+
+	// Draw the current VRAM state
+	swap_buffers();
+
 	SDL_WM_SetCaption("DasOS Virtual Platform - STOPPED", NULL);
 
 	running = true;
@@ -302,16 +374,16 @@ void run_visual_mode()
 
 void swap_buffers()
 {
-  if(screen == NULL)
-    return;
-  SDL_LockSurface(screen);
-  memcpy(
-    screen->pixels,
-    (uint8_t*)mainCore.memory + 4096,
-    screen->h * screen->pitch);
-  SDL_UnlockSurface(screen);
-	
-	if(executionPaused)
+	if (screen == NULL)
+		return;
+	SDL_LockSurface(screen);
+	memcpy(
+		screen->pixels,
+		(uint8_t*)mainCore.memory + 4096,
+		screen->h * screen->pitch);
+	SDL_UnlockSurface(screen);
+
+	if (executionPaused)
 	{
 		SDL_Rect target = {
 			4, 4, 10, 24,
@@ -321,7 +393,7 @@ void swap_buffers()
 			NULL,
 			screen,
 			&target);
-		target = (SDL_Rect){
+		target = (SDL_Rect) {
 			18, 4, 10, 24,
 		};
 		SDL_BlitSurface(
@@ -330,8 +402,8 @@ void swap_buffers()
 			screen,
 			&target);
 	}
- 
-  SDL_Flip(screen);
+
+	SDL_Flip(screen);
 }
 
 void run_text_mode()
@@ -360,14 +432,14 @@ int main(int argc, char **argv)
 		case 'V':
 			visualMode = 1;
 			break;
-    case 'R':
-      autoSwapBuffers = true;
-      break;
-    case 's':
-      executionsPerSimulationStep = atoi(optarg);
-      if(executionsPerSimulationStep <= 0)
-        executionsPerSimulationStep = 50;
-      break;
+		case 'R':
+			autoSwapBuffers = true;
+			break;
+		case 's':
+			executionsPerSimulationStep = atoi(optarg);
+			if (executionsPerSimulationStep <= 0)
+				executionsPerSimulationStep = 50;
+			break;
 		case '?':
 			if (optopt == 'o' || optopt == 'c' || optopt == 'd')
 				fprintf(stderr, "Option -%c requires an argument.\n", optopt);
@@ -380,27 +452,27 @@ int main(int argc, char **argv)
 			abort();
 		}
 	}
-  
-  if(optind >= argc) {
-    fprintf(stderr, "No initial RAM-file.\n");
-    exit(1);
-  }
-  
+
+	if (optind >= argc) {
+		fprintf(stderr, "No initial RAM-file.\n");
+		exit(1);
+	}
+
 	for (int index = optind; index < argc; index++)
 	{
 		// fprintf(stderr, "Loading %s...\n", argv[index]);
-		if(load_exp(argv[index]) == 0) {
+		if (load_exp(argv[index]) == 0) {
 			fprintf(stderr, "%s not found.\n", argv[index]);
 			exit(1);
 		}
 	}
-	
-	if(debugMode) dump_vm();
-	
-	if(visualMode)
+
+	if (debugMode) dump_vm();
+
+	if (visualMode)
 		run_visual_mode();
 	else
 		run_text_mode();
-	
+
 	return 0;
 }

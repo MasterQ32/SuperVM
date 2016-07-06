@@ -1,7 +1,3 @@
-#if !defined(__gcc)
-#define  _CRT_SECURE_NO_WARNINGS
-#endif
-
 #include <stdint.h>
 #include <stddef.h>
 
@@ -14,6 +10,7 @@
 #if defined(_MSC_VER)
 #include "getopt.h"
 #include <limits.h>
+#define PATH_MAX 260 // value from windows.h
 #else
 #include <getopt.h>
 #include <linux/limits.h>
@@ -56,7 +53,7 @@ void file_append(uint32_t type, char *name, uint32_t base)
 	lastFile = file;
 }
 
-void clear_files()
+void clear_files(void)
 {
 	while(files != NULL)
 	{

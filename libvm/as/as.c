@@ -230,7 +230,7 @@ void assemble()
 			{
 				if(reqPatch) fprintf(listing, "\t; Requires patch:\n");
 				if(!disasmOptions.outputAddresses)
-					fprintf(listing, "\t", yytext);
+					fprintf(listing, "\t");
 				disassemble(&current, 1, entryPoint, listing);
 			}
 			
