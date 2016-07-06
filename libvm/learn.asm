@@ -6,11 +6,12 @@ ret
 ret
 
 _start:
-;	hwio [ci:0] [i0:arg] 0x10000 [r:push]
-;	[i0:pop] syscall [ci:2]
+	in 0x10000 
+	[i0:pop] syscall [ci:2]
+	[i0:arg] syscall [ci:1] '\n'
 
 	push 1000;ms
-	hwio [ci:1] [i0:arg] [i1:pop] 0x10002
+	out 0x10002
 
 	sei
 
