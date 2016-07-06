@@ -22,6 +22,9 @@ cl %INIT% /I "vs\SDL-1.2.15\include" emulator.c vm.c getopt.c %DEVICES% %OPTIONS
 echo Building assembler...
 cl %INIT% /DYY_NO_UNISTD_H as\as.c as\tokens.c mnemonics.c disassembler.c getopt.c %OPTIONS%
 
+echo Building docgen
+cl %INIT% docgen.c mnemonics.c %OPTIONS%
+
 echo Cleaning up...
 del *.obj
 SET PATH=%PATHSAVE%

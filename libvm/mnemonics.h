@@ -5,6 +5,7 @@
 struct mnemonic
 {
 	const char *name;
+	const char *description;
 	instruction_t instr;
 };
 
