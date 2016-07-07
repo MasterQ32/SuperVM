@@ -248,7 +248,7 @@ void initialize_vm()
 	memset(mainCore.stack, 0, VM_STACKSIZE * sizeof(uint32_t));
 
 	// Timer Device with IO Base 0x10000
-	devices[1] = timer_create();
+	devices[1] = devtimer_create();
 	deviceConfigs[1].interruptBase = 1;
 	devices[1]->tagPtr = &deviceConfigs[1];
 }

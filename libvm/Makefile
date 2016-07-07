@@ -15,7 +15,7 @@ svmln: svmln.c
 expdump: expdump.c mnemonics.c disassembler.c
 	$(CC) -g -o bin/$@ $^ $(CFLAGS)
 
-emulator: emulator.c vm.c
+emulator: emulator.c vm.c devices/timer.c
 	$(CC) -g -o bin/$@ $^ -lSDL $(CFLAGS)
 
 svmas:

@@ -8,7 +8,7 @@
 /* Too large delta will overflow the integer before limit check works.       */
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 
-void timer_update(timer_t *timer)
+void timer_update(devtimer_t *timer)
 {
 	// determine timer increment
 	clock_t current = clock();
@@ -30,7 +30,7 @@ void timer_update(timer_t *timer)
 	}
 }
 
-uint32_t timer_read(timer_t *timer, uint16_t reg)
+uint32_t timer_read(devtimer_t *timer, uint16_t reg)
 {
 	switch (reg)
 	{
@@ -42,7 +42,7 @@ uint32_t timer_read(timer_t *timer, uint16_t reg)
 	}
 }
 
-void timer_write(timer_t *timer, uint16_t reg, uint32_t value)
+void timer_write(devtimer_t *timer, uint16_t reg, uint32_t value)
 {
 	switch (reg)
 	{
@@ -51,9 +51,9 @@ void timer_write(timer_t *timer, uint16_t reg, uint32_t value)
 	}
 }
 
-device_t *timer_create()
+device_t *devtimer_create()
 {
-	timer_t *timer = malloc(sizeof(timer_t));
+	devtimer_t *timer = malloc(sizeof(devtimer_t));
 	strcpy(timer->device.name, "Timer v1.0");
 
 	timer->device.update = (void(*)(device_t*))timer_update;

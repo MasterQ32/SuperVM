@@ -9,7 +9,7 @@
 
 #define TIMER_INTR_OVERFLOW 0
 
-struct timer
+struct devtimer
 {
 	device_t device;
 
@@ -18,6 +18,6 @@ struct timer
 	uint32_t reg_limit;
 };
 
-typedef struct timer timer_t;
+typedef struct devtimer devtimer_t;
 
-device_t *timer_create();
+device_t *devtimer_create();

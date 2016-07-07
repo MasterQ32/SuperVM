@@ -15,7 +15,7 @@ cls_copy:
 	get 1  ; Get iterator
 	[i0:arg] add 4096 ; Add screen buffer offset
 	
-	storei [ci:2] ; Write 32bit value
+	store32i
 	
 	; Increase counter
 	[i0:arg] add 4
@@ -51,13 +51,13 @@ blit24_loop_x:
 
 	; tmp = (*it<<16)
 	get 3 ; get it
-	[i0:peek] loadi [ci:0] ; *it
+	[i0:peek] load8i ; *it
 	[i0:arg] shl 16
 	set 4
 	[i0:arg] add 1 ; it++
 	
 	; tmp |= (*it++ << 8)
-	[i0:peek] loadi [ci:0] ; *it
+	[i0:peek] load8i; *it
 	[i0:arg] shl 8
 	get 4 
 	or
@@ -65,7 +65,7 @@ blit24_loop_x:
 	[i0:arg] add 1 ; it++
 	
 	; tmp |= (*it++)
-	[i0:peek] loadi [ci:0] ; *it
+	[i0:peek] load8i ; *it
 	get 4 
 	or
 	; color is now loaded completly
@@ -81,7 +81,7 @@ blit24_loop_x:
 	add
 	[i0:arg] mul 4
 	[i0:arg] add 0x1000
-	storei [ci:2] ; write 32bit bal
+	store32i ; write 32bit bal
 	
 	[i0:arg] add 1 ; it++
 	set 3

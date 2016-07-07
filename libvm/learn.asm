@@ -10,7 +10,7 @@ _start:
 	[i0:pop] syscall [ci:2]
 	[i0:arg] syscall [ci:1] '\n'
 
-	push 1;ms
+	in 0x10000 ; 1 s
 	out 0x10002
 
 	sei
