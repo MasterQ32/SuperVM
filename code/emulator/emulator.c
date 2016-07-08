@@ -172,6 +172,15 @@ void initialize_vm()
 	devices[1]->tagPtr = &deviceConfigs[1];
 }
 
+void load_section(const expsection_t * section, FILE *f)
+{
+	uint8_t *sectionInRam = (uint8_t*)mainCore.memory + section->base;
+	int len = fread(sectionInRam, 1, section->length, f);
+	if (len != section->length)
+		fprintf(stderr, "Read invalid size.\n");
+}
+
+
 extern bool autoSwapBuffers;
 extern int executionsPerSimulationStep;
 
@@ -221,7 +230,7 @@ int main(int argc, char **argv)
 	for (int index = optind; index < argc; index++)
 	{
 		// fprintf(stderr, "Loading %s...\n", argv[index]);
-		if (load_exp(argv[index]) == 0) {
+		if (exp_load(argv[index], &load_section) == 0) {
 			fprintf(stderr, "%s not found.\n", argv[index]);
 			exit(1);
 		}

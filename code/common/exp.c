@@ -1,10 +1,9 @@
 #include "exp.h"
-#include "emulator.h"
 
 #include <stdio.h>
 #include <stdbool.h>
 
-bool load_exp(const char *fileName)
+bool exp_load(const char *fileName, load_section_f loadSection)
 {
 	FILE *f = fopen(fileName, "rb");
 	if (f == NULL)
@@ -43,12 +42,11 @@ bool load_exp(const char *fileName)
 		fseek(f, fileHeader.posSections + i * sizeof(expsection_t), SEEK_SET);
 		fread(&section, 1, sizeof(expsection_t), f);
 
-		fseek(f, section.start, SEEK_SET);
-
-		uint8_t *sectionInRam = (uint8_t*)mainCore.memory + section.base;
-		int len = fread(sectionInRam, 1, section.length, f);
-		if (len != section.length)
-			fprintf(stderr, "Read invalid size.\n");
+		if(loadSection != NULL)
+		{
+			fseek(f, section.start, SEEK_SET);
+			loadSection(&section, f);
+		}
 	}
 
 	return true;

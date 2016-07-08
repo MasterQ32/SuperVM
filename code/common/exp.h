@@ -7,6 +7,8 @@
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
 
 static const uint32_t EXP_MAGIC = 0x00505845; // 'E' 'X' 'P' '\0'
 
@@ -51,3 +53,7 @@ typedef struct expfile expfile_t;
 typedef struct expsection expsection_t;
 typedef struct expstring expstring_t;
 typedef struct expmeta expmeta_t;
+
+typedef void (*load_section_f)(const expsection_t *, FILE *);
+
+bool exp_load(const char *fileName, load_section_f loadSection);
