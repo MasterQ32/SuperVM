@@ -216,3 +216,6 @@ ModelManifest.xml
 *.lib
 *.dll
 SDL-1.2.15/
+
+*.exp
+*.bin
