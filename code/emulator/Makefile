@@ -9,7 +9,7 @@ FLAGS += -I../common/
 
 all: emulator
 
-emulator: emulator.o mnemonics.o disassembler.o vm.o devices/timer.o
+emulator: emulator.o visualmode.o textmode.o exp.o mnemonics.o disassembler.o vm.o devices/timer.o
 	$(LD) $(FLAGS) -o $(addprefix $(OUTDIR), $@) $(addprefix $(TMPDIR), $^) -lSDL
 
 %.o: %.c

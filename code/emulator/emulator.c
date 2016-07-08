@@ -1,39 +1,22 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "vm.h"
+#include "emulator.h"
+
 #include "exp.h"
-#include "devices/device.h"
 #include "devices/timer.h"
 
 #include <stdbool.h>
-
-#if defined(_MSC_VER)
-#include <SDL.h>
-#include "getopt.h"
-#undef main
-#else
-#include <SDL/SDL.h>
 #include <getopt.h>
-#endif
-
-#define DEVICE_COUNT 32
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 bool running = true;
-bool instaquit = false;
-bool debugMode = false;
 bool visualMode = false;
+
+bool debugMode = false;
 bool executionPaused = false;
-
-void swap_buffers();
-SDL_Surface *screen = NULL;
-SDL_Surface *pausePicture = NULL;
-
-struct deviceconfig
-{
-	uint32_t interruptBase;
-};
-
-typedef struct deviceconfig deviceconfig_t;
 
 device_t *devices[DEVICE_COUNT];
 deviceconfig_t deviceConfigs[DEVICE_COUNT];
@@ -113,34 +96,12 @@ uint32_t vm_hwio(spu_t *process, cmdinput_t *info)
 	{
 		return device->read(device, regNum);
 	}
-
-	/*
-	switch (info->info)
-	{
-	case 1: swap_buffers(); break;
-	default:
-		fprintf(
-			stderr,
-			"HWIO [%d]: (%d, %d)\n",
-			info->info,
-			info->input0,
-			info->input1);
-	}
-	return 0;
-	*/
 }
 
 spu_t mainCore;
 
 void device_interrupt_callback(struct device *device, uint32_t interrupt)
 {
-	// TODO: Add interrupt base
-
-	// TODO: think about it! :D
-	// Ist_das_alles.avi
-
-	// fprintf(stderr, "INTR[%s,%d]\n", device->name, interrupt);
-
 	deviceconfig_t *config = device->tagPtr;
 	mainCore.interrupt = config->interruptBase + interrupt;
 }
@@ -183,48 +144,6 @@ void update_vm()
 	if (debugMode || executionPaused) dump_vm();
 }
 
-void update_input(SDL_Event *ev)
-{
-	switch (ev->type)
-	{
-	case SDL_QUIT:
-		instaquit = true;
-		running = false;
-		break;
-	case SDL_KEYDOWN:
-		switch (ev->key.keysym.sym)
-		{
-		case SDLK_ESCAPE: running = false; return;
-		case SDLK_F5:
-			executionPaused = !executionPaused;
-			swap_buffers();
-			return;
-		case SDLK_F10:
-			if (executionPaused) {
-				update_vm();
-				swap_buffers();
-			}
-			return;
-		case SDLK_1:
-			mainCore.interrupt = 1;
-			return;
-		case SDLK_2:
-			mainCore.interrupt = 2;
-			return;
-		case SDLK_3:
-			mainCore.interrupt = 3;
-			return;
-		case SDLK_4:
-			mainCore.interrupt = 4;
-			return;
-		case SDLK_5:
-			mainCore.interrupt = 5;
-			return;
-		}
-		break;
-	}
-}
-
 void initialize_vm()
 {
 	// Initialize memory
@@ -253,167 +172,8 @@ void initialize_vm()
 	devices[1]->tagPtr = &deviceConfigs[1];
 }
 
-bool load_exp(const char *fileName)
-{
-	FILE *f = fopen(fileName, "rb");
-	if (f == NULL)
-	{
-		fprintf(stderr, "Could not open file %s\n", fileName);
-		return false;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-
-	expfile_t fileHeader;
-
-	if (fread(&fileHeader, 1, sizeof(expfile_t), f) != sizeof(expfile_t))
-	{
-		fprintf(stderr, "File %s does not contain a valid header.\n", fileName);
-		return false;
-	}
-	if (fileHeader.magicNumber != EXP_MAGIC)
-	{
-		fprintf(stderr, "Invalid magic in %s\n", fileName);
-		return false;
-	}
-	if (fileHeader.majorVersion != 1 && fileHeader.minorVersion == 0)
-	{
-		fprintf(
-			stderr, "Invalid version %s: %d.%d\n",
-			fileName,
-			fileHeader.majorVersion, fileHeader.minorVersion);
-		return false;
-	}
-
-	for (uint32_t i = 0; i < fileHeader.numSections; i++)
-	{
-		expsection_t section;
-
-		fseek(f, fileHeader.posSections + i * sizeof(expsection_t), SEEK_SET);
-		fread(&section, 1, sizeof(expsection_t), f);
-
-		fseek(f, section.start, SEEK_SET);
-
-		uint8_t *sectionInRam = (uint8_t*)mainCore.memory + section.base;
-		int len = fread(sectionInRam, 1, section.length, f);
-		if (len != section.length)
-			fprintf(stderr, "Read invalid size.\n");
-	}
-
-	return true;
-}
-
-int executionsPerSimulationStep = 50;
-bool autoSwapBuffers = false;
-
-void run_visual_mode()
-{
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		exit(1);
-	}
-	atexit(SDL_Quit);
-
-	screen = SDL_SetVideoMode(640, 480, 32, SDL_DOUBLEBUF);
-	SDL_WM_SetCaption("DasOS Virtual Platform", NULL);
-
-	pausePicture = SDL_LoadBMP("pause.bmp");
-
-	// Visual Mode starts with paused
-	// execution for better visualization
-	// technique
-	executionPaused = true;
-
-	swap_buffers();
-
-	SDL_Event ev;
-	while (running)
-	{
-		while (SDL_PollEvent(&ev))
-		{
-			update_input(&ev);
-		}
-
-		if (!executionPaused)
-		{
-			uint32_t start = SDL_GetTicks();
-			do {
-				for (int i = 0; i < executionsPerSimulationStep && running; i++)
-				{
-					update_vm();
-				}
-			} while (running && (SDL_GetTicks() - start) <= 32);
-		}
-
-		if (autoSwapBuffers) swap_buffers();
-	}
-
-	if (instaquit)
-		return;
-
-	// Draw the current VRAM state
-	swap_buffers();
-
-	SDL_WM_SetCaption("DasOS Virtual Platform - STOPPED", NULL);
-
-	running = true;
-	while (running)
-	{
-		while (SDL_PollEvent(&ev))
-		{
-			if (ev.type == SDL_QUIT)
-				running = false;
-			else if (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE)
-				running = false;
-		}
-
-		SDL_Flip(screen);
-
-		SDL_Delay(32);
-	}
-}
-
-void swap_buffers()
-{
-	if (screen == NULL)
-		return;
-	SDL_LockSurface(screen);
-	memcpy(
-		screen->pixels,
-		(uint8_t*)mainCore.memory + 4096,
-		screen->h * screen->pitch);
-	SDL_UnlockSurface(screen);
-
-	if (executionPaused)
-	{
-		SDL_Rect target = {
-			4, 4, 10, 24,
-		};
-		SDL_BlitSurface(
-			pausePicture,
-			NULL,
-			screen,
-			&target);
-		target = (SDL_Rect) {
-			18, 4, 10, 24,
-		};
-		SDL_BlitSurface(
-			pausePicture,
-			NULL,
-			screen,
-			&target);
-	}
-
-	SDL_Flip(screen);
-}
-
-void run_text_mode()
-{
-	while (running)
-	{
-		//TODO: Insert some kind of text events.
-		update_vm();
-	}
-}
+extern bool autoSwapBuffers;
+extern int executionsPerSimulationStep;
 
 int main(int argc, char **argv)
 {
