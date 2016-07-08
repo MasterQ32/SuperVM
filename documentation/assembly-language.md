@@ -1,4 +1,4 @@
-# SuperVM Assembly Language
+# Assembly Language
 
 ## Purpose of this Document
 The SuperVM Virtual Machine only specifies assembler mnemonics and an instruction format,
