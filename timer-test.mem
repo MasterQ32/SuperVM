@@ -1,0 +1,30 @@
+;
+; This file specifies the memory layout for timer-test.asm
+;
+
+; We start at the base address 0x1000
+:ORIGIN 0x1000
+
+;-----------------------------------------------------;
+;     Name          Type      Value (hex/dec/str/chr) ;
+;-----------------------------------------------------;
+:VAR  iCounter        INT32     0x01
+:VAR  strHz           ZSTRING   " Hz\n"
+:VAR  strFreq         ZSTRING   "Timer Frequency: "
+:VAR  strTick         ZSTRING   " ticks\n"
+
+; valid types are:
+; INT8     signed 8 bit integer
+; INT16    signed 16 bit integer
+; INT32    signed 32 bit integer
+; UINT8    unsigned 8 bit integer
+; UINT16   unsigned 16 bit integer
+; UINT32   unsigned 32 bit integer
+; CHAR     UINT8 with character type instead of numeric value
+; STRING   raw string without length encoding
+; ZSTRING  zero terminated string
+; LSTRING  length encoded string, tuple (UINT32, STRING) whereas STRING is the LSTRING literal and UINT32 its length.
+
+; variable names may not be any of the reserved keywords which include the type names and ORIGIN.
+
+:ALIGN 8 ; 64 bit alignment
