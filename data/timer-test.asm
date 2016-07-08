@@ -33,6 +33,11 @@ mainloop:
 
 int_timer:
 	
+	load32 0x101F
+	[i0:peek] syscall [ci:2]
+	[i0:arg] add 1
+	store32 0x101F
+	
 	push 0x1017 ; "tick\n"
 	cpget
 	jmp @puts
