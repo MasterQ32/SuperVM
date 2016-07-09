@@ -78,8 +78,12 @@ void disassemble(instruction_t *list, uint32_t count, uint32_t base, FILE *f)
 		}
 		
 		if(knownInstruction == NULL) {
-			fprintf(stderr, "Could not find matching instruction in mnemonics. This is weird.\n");
-			abort();
+			
+			fprintf(f, "0x%016X\n", &instr);
+			
+			// fprintf(stderr, "Could not find matching instruction in mnemonics. This is weird.\n");
+			// abort();
+			continue;
 		}
 
 		instruction_t ref = knownInstruction->instr;

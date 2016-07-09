@@ -5,7 +5,7 @@ LEX    = flex
 TMPDIR = ../obj/
 OUTDIR = ../bin/
 
-FLAGS += -I../common/
+FLAGS += -g -I../common/
 
 all: asm
 

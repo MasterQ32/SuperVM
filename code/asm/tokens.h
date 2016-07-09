@@ -13,7 +13,9 @@
 #define TOK_CHAR      7
 #define TOK_REFERENCE 8
 #define TOK_BIN       9
-
+#define TOK_VAR       10
+#define TOK_DIR       11
+#define TOK_STR       12
 
 extern int yylineno;
 extern char *yytext;

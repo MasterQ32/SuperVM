@@ -100,13 +100,13 @@ int main(int argc, char **argv)
 		
 		char input[64];
 		strcpy(input, input0);
-		strcat(input, ",");
+		strcat(input, "/");
 		strcat(input, input1);
     
 		fprintf(target, "| Property  | Configuration |\n");
 		fprintf(target, "|-----------|---------------|\n");
 		fprintf(target, "| Execution | %13s |\n", execution);
-		fprintf(target, "| Input 0,1 | %13s |\n", input);
+		fprintf(target, "| Input 0/1 | %13s |\n", input);
 		fprintf(target, "| Command   | %13s |\n", cmd);
 		fprintf(target, "| Result    | %13s |\n", result);
 		fprintf(target, "| Set Flags | %13s |\n", (mnemonics[i].instr.flags ? "yes" : "no") );

@@ -395,8 +395,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 13
-#define YY_END_OF_BUFFER 14
+#define YY_NUM_RULES 17
+#define YY_END_OF_BUFFER 18
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -404,12 +404,16 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[34] =
+static yyconst flex_int16_t yy_accept[74] =
     {   0,
-        0,    0,   14,   12,    5,   11,   12,   12,    3,    3,
-        1,   12,    6,   12,   12,    0,    0,    3,    3,    7,
-        6,    0,    6,    6,    1,   10,    0,    9,    9,    4,
-        2,    8,    0
+        0,    0,   18,   16,    3,    9,   16,   16,   16,   16,
+        2,    2,    1,   16,    4,    4,   16,    2,    2,   16,
+        4,    4,   16,    0,   15,    0,   14,    0,    0,    2,
+        2,    4,    4,    4,    1,    8,    0,    0,    2,    5,
+        4,    0,    4,    4,    0,    0,    0,    0,    7,    7,
+        2,    2,    6,    2,    2,    0,    0,    0,    0,    0,
+        0,    0,   13,    0,    0,    0,   11,    0,    0,    0,
+       12,   10,    0
     } ;
 
 static yyconst YY_CHAR yy_ec[256] =
@@ -417,17 +421,17 @@ static yyconst YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    1,    1,    1,    1,    1,    4,    1,
-        1,    1,    1,    1,    5,    1,    1,    6,    7,    8,
-        8,    8,    8,    8,    8,    8,    8,    9,   10,    1,
-        1,    1,    1,   11,   12,   12,   12,   12,   12,   12,
-       13,   13,   13,   13,   13,   13,   13,   13,   13,   13,
-       13,   13,   13,   13,   13,   13,   13,   13,   13,   13,
-       14,   15,   16,    1,   17,    1,   12,   18,   12,   12,
+        1,    2,    1,    4,    1,    5,    1,    1,    6,    1,
+        1,    1,    1,    1,    7,    1,    1,    8,    9,   10,
+       10,   10,   10,   10,   10,   10,   10,   11,   12,    1,
+        1,    1,    1,   13,   14,   15,   16,   17,   18,   15,
+       19,   20,   21,   20,   20,   22,   20,   23,   24,   20,
+       20,   25,   20,   20,   26,   27,   20,   20,   20,   20,
+       28,   29,   30,    1,   31,    1,   15,   32,   15,   15,
 
-       12,   12,   13,   13,   13,   13,   13,   13,   13,   13,
-       13,   13,   13,   13,   13,   13,   13,   13,   13,   19,
-       13,   13,    1,    1,    1,    1,    1,    1,    1,    1,
+       15,   15,   20,   20,   20,   20,   20,   20,   20,   20,
+       20,   20,   20,   20,   20,   20,   20,   20,   20,   33,
+       20,   20,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -444,62 +448,118 @@ static yyconst YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst YY_CHAR yy_meta[20] =
+static yyconst YY_CHAR yy_meta[34] =
     {   0,
-        1,    1,    2,    1,    1,    3,    3,    3,    4,    1,
-        1,    5,    5,    1,    1,    6,    5,    5,    5
+        1,    1,    2,    1,    1,    1,    1,    3,    3,    3,
+        4,    1,    1,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    1,    1,    5,
+        6,    3,    3
     } ;
 
-static yyconst flex_uint16_t yy_base[40] =
+static yyconst flex_uint16_t yy_base[83] =
     {   0,
-        0,    0,   64,   74,   74,   74,   43,    0,   14,    6,
-        0,    0,   28,    0,   43,   43,   42,    0,    0,   74,
-        0,   36,   22,   31,    0,    0,   26,   74,   37,    0,
-        0,   74,   74,   50,   27,   56,   60,   65,   68
+        0,   33,  149,  259,  259,  259,   63,    0,  112,   60,
+       85,   63,    0,    0,    0,  136,    0,  111,  137,   60,
+       65,   71,  128,   74,  259,  135,    0,  131,  130,   80,
+       89,    0,   71,  161,    0,    0,   79,  105,    0,  259,
+       74,  123,  101,  186,  111,  109,  106,  116,  259,  123,
+       92,    0,  259,  104,    0,  107,  111,  105,  100,  105,
+      101,   97,  259,   92,   81,   85,  259,   87,   68,   68,
+      259,  259,  259,  218,  222,  228,   74,  234,  238,  244,
+      248,  252
     } ;
 
-static yyconst flex_int16_t yy_def[40] =
+static yyconst flex_int16_t yy_def[83] =
     {   0,
-       33,    1,   33,   33,   33,   33,   34,   35,   33,    9,
-       36,   37,   10,   38,   39,   33,   34,   35,   10,   33,
-       13,   39,   13,   33,   36,   37,   38,   33,   33,   23,
-       24,   33,    0,   33,   33,   33,   33,   33,   33
+       73,   73,   73,   73,   73,   73,   74,   75,   76,   73,
+       77,   77,   78,   79,   77,   77,   80,   81,   81,   73,
+       81,   81,   82,   74,   73,   74,   75,   73,   76,   73,
+       77,   77,   77,   77,   78,   79,   74,   80,   19,   73,
+       81,   82,   19,   19,   73,   73,   73,   73,   73,   73,
+       77,   34,   73,   19,   44,   73,   73,   73,   73,   73,
+       73,   73,   73,   73,   73,   73,   73,   73,   73,   73,
+       73,   73,    0,   73,   73,   73,   73,   73,   73,   73,
+       73,   73
     } ;
 
-static yyconst flex_uint16_t yy_nxt[94] =
+static yyconst flex_uint16_t yy_nxt[293] =
     {   0,
-        4,    5,    6,    7,    8,    9,   10,   10,    4,   11,
-       12,   13,   13,   14,    4,    4,   15,   13,   13,   19,
-       19,   19,   20,   21,   21,   21,   21,   30,   30,   18,
-       22,   23,   24,   21,   21,   21,   31,   31,   31,   20,
-       28,   32,   31,   21,   20,   29,   28,   22,   31,   21,
-       16,   20,   16,   16,   16,   16,   25,   17,   25,   25,
-       25,   25,   26,   33,   26,   27,   27,   27,   27,   27,
-       22,   22,   22,    3,   33,   33,   33,   33,   33,   33,
-       33,   33,   33,   33,   33,   33,   33,   33,   33,   33,
-       33,   33,   33
+        4,    5,    6,    7,    8,    9,   10,   11,   12,   12,
+        4,   13,   14,   15,   15,   15,   15,   15,   15,   15,
+       15,   16,   15,   15,   15,   15,   15,   17,    4,    4,
+        4,   15,   15,    4,    5,    6,    7,    8,    9,   10,
+       18,   19,   19,   20,   13,   14,   21,   21,   21,   21,
+       21,   21,   21,   21,   22,   21,   21,   21,   21,   21,
+       17,    4,    4,   23,   21,   21,   25,   30,   30,   30,
+       31,   31,   31,   45,   37,   40,   32,   25,   51,   51,
+       46,   40,   25,   47,   40,   72,   48,   30,   30,   30,
+       71,   26,   31,   31,   31,   42,   31,   31,   31,   51,
+
+       51,   42,   26,   70,   42,   69,   68,   26,   54,   54,
+       41,   54,   54,   41,   67,   66,   33,   34,   39,   39,
+       39,   40,   65,   64,   63,   62,   61,   60,   49,   59,
+       58,   57,   56,   40,   53,   50,   49,   73,   40,   37,
+       29,   42,   43,   44,   39,   39,   39,   40,   73,   73,
+       73,   73,   73,   73,   73,   73,   73,   73,   73,   73,
+       73,   73,   73,   73,   73,   73,   73,   42,   52,   52,
+       52,   73,   73,   73,   52,   52,   52,   52,   52,   73,
+       73,   73,   73,   73,   73,   73,   73,   73,   73,   73,
+       73,   73,   52,   55,   55,   55,   73,   73,   73,   55,
+
+       55,   55,   55,   55,   73,   73,   73,   73,   73,   73,
+       73,   73,   73,   73,   73,   73,   73,   55,   24,   24,
+       24,   24,   24,   24,   27,   73,   73,   27,   28,   73,
+       28,   28,   28,   28,   35,   73,   35,   35,   35,   35,
+       36,   73,   73,   36,   38,   38,   38,   38,   73,   38,
+       41,   41,   73,   41,   42,   42,   73,   42,    3,   73,
+       73,   73,   73,   73,   73,   73,   73,   73,   73,   73,
+       73,   73,   73,   73,   73,   73,   73,   73,   73,   73,
+       73,   73,   73,   73,   73,   73,   73,   73,   73,   73,
+       73,   73
 
     } ;
 
-static yyconst flex_int16_t yy_chk[94] =
+static yyconst flex_int16_t yy_chk[293] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    9,
-        9,    9,    9,   10,   10,    9,    9,   23,   23,   35,
-        9,    9,    9,   13,   13,   13,   24,   24,   24,   24,
-       29,   27,   24,   24,   22,   17,   16,   24,   24,   24,
-       34,   15,   34,   34,   34,   34,   36,    7,   36,   36,
-       36,   36,   37,    3,   37,   38,   38,   38,   38,   38,
-       39,   39,   39,   33,   33,   33,   33,   33,   33,   33,
-       33,   33,   33,   33,   33,   33,   33,   33,   33,   33,
-       33,   33,   33
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    7,   10,   10,   10,
+       12,   12,   12,   20,   22,   21,   77,   24,   33,   33,
+       20,   22,   37,   20,   41,   70,   20,   30,   30,   30,
+       69,    7,   11,   11,   11,   21,   31,   31,   31,   51,
+
+       51,   22,   24,   68,   41,   66,   65,   37,   43,   43,
+       43,   54,   54,   54,   64,   62,   11,   11,   18,   18,
+       18,   18,   61,   60,   59,   58,   57,   56,   50,   48,
+       47,   46,   45,   42,   38,   29,   28,   26,   23,   16,
+        9,   18,   18,   18,   19,   19,   19,   19,    3,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,   19,   34,   34,
+       34,    0,    0,    0,   34,   34,   34,   34,   34,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,   34,   44,   44,   44,    0,    0,    0,   44,
+
+       44,   44,   44,   44,    0,    0,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,   44,   74,   74,
+       74,   74,   74,   74,   75,    0,    0,   75,   76,    0,
+       76,   76,   76,   76,   78,    0,   78,   78,   78,   78,
+       79,    0,    0,   79,   80,   80,   80,   80,    0,   80,
+       81,   81,    0,   81,   82,   82,    0,   82,   73,   73,
+       73,   73,   73,   73,   73,   73,   73,   73,   73,   73,
+       73,   73,   73,   73,   73,   73,   73,   73,   73,   73,
+       73,   73,   73,   73,   73,   73,   73,   73,   73,   73,
+       73,   73
 
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static yyconst flex_int32_t yy_rule_can_match_eol[14] =
+static yyconst flex_int32_t yy_rule_can_match_eol[18] =
     {   0,
-0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0,     };
+0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -517,9 +577,27 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "tokens.y"
 #line 2 "tokens.y"
-#include "tokens.h"
+#include <stdbool.h>
+#include <stdarg.h>
 #define RETURN(x,y) /* fprintf(stderr, "{" #x "}" y ); */ return x
-#line 523 "tokens.c"
+
+#define TOK_INVALID  -1
+#define TOK_EOF       0
+#define TOK_NUM       1
+#define TOK_LABEL     3
+#define TOK_MNEMONIC  4
+#define TOK_MOD       5
+#define TOK_NEWLINE   6
+#define TOK_CHAR      7
+#define TOK_REFERENCE 8
+#define TOK_VAR       10
+#define TOK_STR       11
+#define TOK_INCDIR    12
+#define TOK_ORGDIR    13
+#define TOK_VARDIR    14
+#define TOK_ALNDIR    15
+
+#line 601 "tokens.c"
 
 #define INITIAL 0
 
@@ -700,6 +778,9 @@ extern int yylex (void);
 #endif
 
 #define YY_RULE_SETUP \
+	if ( yyleng > 0 ) \
+		YY_CURRENT_BUFFER_LVALUE->yy_at_bol = \
+				(yytext[yyleng - 1] == '\n'); \
 	YY_USER_ACTION
 
 /** The main scanner function which does all the work.
@@ -737,9 +818,9 @@ YY_DECL
 		}
 
 	{
-#line 19 "tokens.y"
+#line 40 "tokens.y"
 
-#line 743 "tokens.c"
+#line 824 "tokens.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -754,6 +835,7 @@ YY_DECL
 		yy_bp = yy_cp;
 
 		yy_current_state = (yy_start);
+		yy_current_state += YY_AT_BOL();
 yy_match:
 		do
 			{
@@ -766,13 +848,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 34 )
+				if ( yy_current_state >= 74 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 74 );
+		while ( yy_base[yy_current_state] != 259 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -808,72 +890,93 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 20 "tokens.y"
+#line 41 "tokens.y"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 21 "tokens.y"
-RETURN(TOK_HEX,);
+#line 42 "tokens.y"
+RETURN(TOK_NUM,);
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 22 "tokens.y"
-RETURN(TOK_INT,);
+#line 43 "tokens.y"
+;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 23 "tokens.y"
-RETURN(TOK_BIN,);
+#line 44 "tokens.y"
+RETURN(TOK_MNEMONIC,);
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 24 "tokens.y"
-;
+#line 45 "tokens.y"
+RETURN(TOK_LABEL,); 
 	YY_BREAK
 case 6:
+/* rule 6 can match eol */
 YY_RULE_SETUP
-#line 25 "tokens.y"
-RETURN(TOK_MNEMONIC,);
+#line 46 "tokens.y"
+RETURN(TOK_MOD,);
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 26 "tokens.y"
-RETURN(TOK_LABEL,); 
+#line 47 "tokens.y"
+RETURN(TOK_CHAR, );
 	YY_BREAK
 case 8:
-/* rule 8 can match eol */
 YY_RULE_SETUP
-#line 27 "tokens.y"
-RETURN(TOK_MOD,);
+#line 48 "tokens.y"
+RETURN(TOK_REFERENCE, );
 	YY_BREAK
 case 9:
+/* rule 9 can match eol */
 YY_RULE_SETUP
-#line 28 "tokens.y"
-RETURN(TOK_CHAR, );
+#line 49 "tokens.y"
+RETURN(TOK_NEWLINE, "\n");
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 29 "tokens.y"
-RETURN(TOK_REFERENCE, );
+#line 50 "tokens.y"
+RETURN(TOK_INCDIR, );
 	YY_BREAK
 case 11:
-/* rule 11 can match eol */
 YY_RULE_SETUP
-#line 30 "tokens.y"
-RETURN(TOK_NEWLINE, "\n");
+#line 51 "tokens.y"
+RETURN(TOK_ALNDIR, );
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 31 "tokens.y"
-RETURN(TOK_INVALID,);
+#line 52 "tokens.y"
+RETURN(TOK_ORGDIR, );
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 32 "tokens.y"
+#line 53 "tokens.y"
+RETURN(TOK_VARDIR, );
+	YY_BREAK
+case 14:
+YY_RULE_SETUP
+#line 54 "tokens.y"
+RETURN(TOK_VAR, );
+	YY_BREAK
+case 15:
+/* rule 15 can match eol */
+YY_RULE_SETUP
+#line 55 "tokens.y"
+RETURN(TOK_STR, );
+	YY_BREAK
+case 16:
+YY_RULE_SETUP
+#line 56 "tokens.y"
+RETURN(TOK_INVALID,);
+	YY_BREAK
+case 17:
+YY_RULE_SETUP
+#line 57 "tokens.y"
 ECHO;
 	YY_BREAK
-#line 877 "tokens.c"
+#line 980 "tokens.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1154,6 +1257,7 @@ static int yy_get_next_buffer (void)
 	char *yy_cp;
     
 	yy_current_state = (yy_start);
+	yy_current_state += YY_AT_BOL();
 
 	for ( yy_cp = (yytext_ptr) + YY_MORE_ADJ; yy_cp < (yy_c_buf_p); ++yy_cp )
 		{
@@ -1166,7 +1270,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 34 )
+			if ( yy_current_state >= 74 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1194,11 +1298,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 34 )
+		if ( yy_current_state >= 74 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 33);
+	yy_is_jam = (yy_current_state == 73);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1318,7 +1422,8 @@ static int yy_get_next_buffer (void)
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
 
-	if ( c == '\n' )
+	YY_CURRENT_BUFFER_LVALUE->yy_at_bol = (c == '\n');
+	if ( YY_CURRENT_BUFFER_LVALUE->yy_at_bol )
 		   
     yylineno++;
 ;
@@ -1886,8 +1991,505 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 32 "tokens.y"
+#line 57 "tokens.y"
 
 
 // This is the end of the file
 int yywrap() { return 1; }
+
+#include "vm.h"
+#include "mnemonics.h"
+#include "sectionlist.h"
+#include <stdlib.h>
+
+extern FILE *output;
+
+static const char * lastError = NULL;
+
+static void error(const char *currentFileName, const char *msg, ...)
+{
+	fprintf(stderr, "%s:%d: Error: ", currentFileName, yylineno - 1);
+	
+  va_list args;
+  va_start (args, msg);
+  vfprintf (stderr, msg, args);
+  va_end (args);
+	
+	fprintf(stderr, "\n");
+	
+	exit(1);
+}
+
+static void warning(const char *currentFileName, const char *msg, ...)
+{
+	fprintf(stderr, "%s:%d: Warning: ", currentFileName, yylineno - 1);
+	
+  va_list args;
+  va_start (args, msg);
+  vfprintf (stderr, msg, args);
+  va_end (args);
+	
+	fprintf(stderr, "\n");
+}
+
+void assert_tok(const char *currentFileName, int type)
+{
+	int tok;
+	if((tok = yylex()) != type) {
+		error(currentFileName, "Unexpected symbol or token '%s'(%d)", yytext, tok);
+	}
+}
+
+char *strdup(const char *str)
+{
+	char *res = malloc(strlen(str) + 1);
+	strcpy(res, str);
+	return res;
+}
+
+char *makeIncludeRelative(const char *base, const char *rel)
+{
+	// absolute path handling
+	if(rel[0] == '/')
+		return strdup(rel);
+	int blen = strlen(base);
+	int rlen = strlen(rel);
+	char *result = malloc(blen + rlen + 1);
+	strcpy(result, "");
+	
+	char *start = strrchr(base, '/');
+	if(start != NULL)
+		memcpy(result, base, start - base + 1);
+	return strcat(result, rel);
+}
+
+
+void apply_modifier(instruction_t *i, const char *mod);
+
+void apply_modifiers(int *tok, instruction_t *i)
+{
+	while(*tok == TOK_MOD)
+	{
+		char *s = yytext + 1;
+		int len = strlen(s);
+		s[len - 1] = 0;
+		apply_modifier(i, s);
+		*tok = yylex();
+	}
+}
+
+uint32_t getNum(const char *text)
+{
+	if(text[2] == 'x')
+		return (uint32_t)strtol(text, NULL, 16);
+	else if(text[2] == 'b')
+		return (uint32_t)strtol(text + 2, NULL, 2);
+	else
+		return (uint32_t)atoi(yytext);
+}
+
+void read_instruction(const char *fileName, int tok)
+{
+	if(tok == TOK_LABEL)
+	{
+		int len = strlen(yytext);
+		yytext[len - 1] = '\0'; // remove colon
+
+		if((currentSection->section.length & 0xFFFFFFF8) != currentSection->section.length)
+		{
+			warning(fileName, "Label '%s' is misaligned.", yytext);
+		}
+		list_insert(&labels, yytext, currentSection->section.length);
+		
+		tok = yylex();
+	}
+	if(tok == TOK_NEWLINE)
+		return;
+	instruction_t current = { 0 };
+
+	apply_modifiers(&tok, &current);
+	
+	if(tok != TOK_MNEMONIC)
+	{
+		error(fileName, "Expected mnemonic, got '%s' instead.", yytext);
+		exit(1);
+	}
+	
+	// Gather mnemonic to generate base instruction
+	for(int i = 0; ; i++)
+	{
+		if(mnemonics[i].name == NULL) {
+			error(fileName, "Invalid mnemonic: '%s'", yytext);
+			exit(1);
+		}
+		else if(strcmp(mnemonics[i].name, yytext) == 0) {
+			// Copy instruction here, but account for
+			// already applied modificatiors by 
+			// only copying when values still zero.
+		
+			#define COPY_IF(prop) \
+				if(!current.prop) \
+					current.prop = mnemonics[i].instr.prop;
+			COPY_IF(execZ );
+			COPY_IF(execN);
+			COPY_IF(input0);
+			COPY_IF(input1);
+			COPY_IF(command);
+			COPY_IF(cmdinfo);
+			COPY_IF(flags);
+			COPY_IF(output);
+			COPY_IF(argument);
+			#undef COPY_IF
+			// current = mnemonics[i].instr;
+			break;
+		}
+	}
+	
+	tok = yylex();
+	
+	apply_modifiers(&tok, &current);
+	
+	int reqPatch = 0;
+	if(tok != TOK_NEWLINE && tok != TOK_EOF)
+	{
+		switch(tok)
+		{
+			case TOK_NUM:
+				current.argument = getNum(yytext);
+				break;
+			case TOK_CHAR:
+				if(yytext[1] == '\\') {
+					switch(yytext[2]) {
+						case 'n': current.argument = '\n'; break;
+						case 'r': current.argument = '\r'; break;
+						case 't': current.argument = '\t'; break;
+						case '\'': current.argument = '\''; break;
+						case '\"': current.argument = '\"'; break;
+					}
+				} else {
+					current.argument = (uint32_t)yytext[1];
+				}
+				break;
+			case TOK_VAR:
+			{
+				error(fileName, "Variables are not supported yet.");
+				break;
+			}
+			case TOK_REFERENCE:
+			{
+				// (yytext + 1) removes the leading @
+				// check if we already had a label with this name
+				uint32_t target = list_find(&labels, yytext + 1);
+				if(listFound)
+					current.argument = addrToInstr(target);
+				else {
+					// insert patch here for deferred argument modification
+					// store the exact position in the file for the patch
+					list_insert(&patches, yytext + 1, ftell(output) + 4);
+					reqPatch = 1;
+				}
+				break;
+			}
+			default: 
+				error(fileName, "Expected number, character or label reference, got '%s' instead.", yytext);
+		}
+		tok = yylex();
+		apply_modifiers(&tok, &current);
+	}
+	if(tok != TOK_NEWLINE && tok != TOK_EOF)
+	{
+		error(fileName, "Expected end of line, got '%s instead.", yytext);
+	}
+	
+	if((currentSection->section.length & 0xFFFFFFF8) != currentSection->section.length)
+	{
+		warning(fileName, "Code Misalignment");
+	}
+	
+	// write command:
+	currentSection->section.length += fwrite(&current, 1, sizeof(instruction_t), output);
+}
+
+void read_variable(const char *fileName)
+{
+	char name[64];
+	int type = 0;
+	
+	assert_tok(fileName, TOK_MNEMONIC);
+	strcpy(name, yytext);
+	
+	assert_tok(fileName, TOK_MNEMONIC); // check for type
+	if(strcmp(yytext, "INT8") == 0) {
+		type = 1;
+	}
+	else if(strcmp(yytext, "INT16") == 0) {
+		type = 2;
+	}
+	else if(strcmp(yytext, "INT32") == 0) {
+		type = 3;
+	}
+	else if(strcmp(yytext, "UINT8") == 0) {
+		type = 4;
+	}
+	else if(strcmp(yytext, "UINT16") == 0) {
+		type = 5;
+	}
+	else if(strcmp(yytext, "UINT32") == 0) {
+		type = 6;
+	}
+	else if(strcmp(yytext, "STRING") == 0) {
+		type = 7;
+	}
+	else if(strcmp(yytext, "ZSTRING") == 0) {
+		type = 8;
+	}
+	else if(strcmp(yytext, "LSTRING") == 0) {
+		type = 9;
+	}
+	
+	switch(type)
+	{
+		case 1:
+		case 4:
+		{
+			assert_tok(fileName, TOK_NUM);
+			uint8_t value = getNum(yytext);
+			fwrite(&value, 1, 1, output);
+			currentSection->section.length += 1;
+			break;
+		}
+		case 2:
+		case 5:
+		{
+			assert_tok(fileName, TOK_NUM);
+			uint16_t value = getNum(yytext);
+			fwrite(&value, 2, 1, output);
+			currentSection->section.length += 2;
+			break;
+		}
+		case 3:
+		case 6:
+		{
+			assert_tok(fileName, TOK_NUM);
+			uint32_t value = getNum(yytext);
+			fwrite(&value, 4, 1, output);
+			currentSection->section.length += 4;
+			break;
+		}
+		case 7: // STRING
+		{
+			assert_tok(fileName, TOK_STR);
+			char *value = yytext + 1;
+			int len = strlen(value) - 1;
+			value[len] = 0;
+			fwrite(value, len, 1, output);
+			currentSection->section.length += len;
+			break;
+		}
+		case 8: // ZSTRING
+		{
+			assert_tok(fileName, TOK_STR);
+			char *value = yytext + 1;
+			int len = strlen(value) - 1;
+			value[len] = 0;
+			fwrite(value, len + 1, 1, output);
+			currentSection->section.length += (len + 1);
+			break;
+		}
+		case 9: // LSTRING
+		{
+			assert_tok(fileName, TOK_STR);
+			char *value = yytext + 1;
+			uint32_t len = strlen(value) - 1;
+			value[len] = 0;
+			fwrite(&len, 4, 1, output);
+			fwrite(value, len, 1, output);
+			currentSection->section.length += (len + 4);
+			break;
+		}
+		default:
+			error(fileName, "Variable type %s is not a valid type name.", yytext);
+	}
+}
+
+bool process(const char *fileName)
+{
+	if(fileName == NULL) {
+		lastError = "Invalid file name.";
+		return false;
+	}
+	
+	FILE *input = fopen(fileName, "r");
+	if(input == NULL) {
+		lastError = "Could not find file.";
+		return false;
+	}
+	
+	yypush_buffer_state(yy_create_buffer(input,YY_BUF_SIZE ));
+	
+	while(true)
+	{
+		int tok = yylex();
+		if(tok == TOK_EOF)
+		{
+			break;
+		}
+		else if(tok == TOK_INCDIR)
+		{
+			assert_tok(fileName, TOK_STR);
+			char *incfileName = yytext + 1;
+			incfileName[strlen(incfileName) - 1] = 0;
+			
+			int lineno = yyget_lineno();
+			yyset_lineno(1);
+			
+			incfileName = makeIncludeRelative(fileName, incfileName);
+			bool success = process(incfileName);
+			free(incfileName);
+			
+			yyset_lineno(lineno);
+			
+			if(!success) {
+				error(fileName, "Could not include file: %s", lastError);
+				yyterminate();
+				return false;
+			}
+		}
+		else if(tok == TOK_ORGDIR)
+		{
+			assert_tok(fileName, TOK_NUM);
+			uint32_t origin = getNum(yytext);
+			
+			new_section(".org", origin);
+		}
+		else if(tok == TOK_ALNDIR)
+		{
+			assert_tok(fileName, TOK_NUM);
+			uint32_t alignment = getNum(yytext);
+			
+			if(alignment == 0)
+				warning(fileName, "Zero alignment is ignored.");
+			else
+			{
+				uint32_t len = currentSection->section.length;
+				uint32_t aligned = (len + (alignment - 1)) & ~(alignment - 1);
+				
+				uint32_t padding = aligned - len;
+				for(int i = 0; i < padding; i++) {
+					int z = 0;
+					fwrite(&z, 1, 1, output);
+				}
+				currentSection->section.length += padding;
+			}
+		}
+		else if(tok == TOK_VARDIR)
+		{
+			read_variable(fileName);
+		}
+		else
+		{
+			read_instruction(fileName, tok);
+		}
+	}
+	
+	yypop_buffer_state();
+	
+	fclose(input);
+	
+	return true;
+}
+
+
+void apply_modifier(instruction_t *i, const char *mod)
+{
+	// printf("[%s]\n", mod);
+	if(strncmp("ci:", mod, 3) == 0)
+	{
+		i->cmdinfo = atoi(mod + 3);
+		return;
+	}
+
+	if(strncmp("cmd:", mod, 4) == 0)
+	{
+		fprintf(stderr, "Command specification %s not supported yet.\n", mod);
+		exit(1);
+	}
+	
+	if(strcmp("f:yes", mod) == 0)
+	{
+		i->flags = 1;
+	}
+	else if(strcmp("f:no", mod) == 0)
+	{
+		i->flags = 0;
+	}
+	else if(strcmp("r:discard", mod) == 0)
+	{
+		i->output = VM_OUTPUT_DISCARD;
+	}
+	else if(strcmp("r:push", mod) == 0)
+	{
+		i->output = VM_OUTPUT_PUSH;
+	}
+	else if(strcmp("r:jump", mod) == 0)
+	{
+		i->output = VM_OUTPUT_JUMP;
+	}
+	else if(strcmp("r:jumpr", mod) == 0)
+	{
+		i->output = VM_OUTPUT_JUMPR;
+	}
+	else if(strcmp("i0:zero", mod) == 0)
+	{
+		i->input0 = VM_INPUT_ZERO;
+	}
+	else if(strcmp("i0:pop", mod) == 0)
+	{
+		i->input0 = VM_INPUT_POP;
+	}
+	else if(strcmp("i0:peek", mod) == 0)
+	{
+		i->input0 = VM_INPUT_PEEK;
+	}
+	else if(strcmp("i0:arg", mod) == 0)
+	{
+		i->input0 = VM_INPUT_ARG;
+	}
+	else if(strcmp("i1:zero", mod) == 0)
+	{
+		i->input1 = VM_INPUT_ZERO;
+	}
+	else if(strcmp("i1:pop", mod) == 0)
+	{
+		i->input1 = VM_INPUT_POP;
+	}
+	else if(strcmp("ex(z)=x", mod) == 0)
+	{
+		i->execZ = VM_EXEC_X;
+	}
+	else if(strcmp("ex(z)=0", mod) == 0)
+	{
+		i->execZ = VM_EXEC_0;
+	}
+	else if(strcmp("ex(z)=1", mod) == 0)
+	{
+		i->execZ = VM_EXEC_1;
+	}
+	else if(strcmp("ex(n)=x", mod) == 0)
+	{
+		i->execN = VM_EXEC_X;
+	}
+	else if(strcmp("ex(n)=0", mod) == 0)
+	{
+		i->execN = VM_EXEC_0;
+	}
+	else if(strcmp("ex(n)=1", mod) == 0)
+	{
+		i->execN = VM_EXEC_1;
+	}
+	else
+	{
+		fprintf(stderr, "Unknown modifier: [%s]\n", mod);
+		exit(1);
+	}
+}
