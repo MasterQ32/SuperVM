@@ -4,6 +4,7 @@
 
 #include "exp.h"
 #include "devices/timer.h"
+#include "disassembler.h"
 
 #include <stdbool.h>
 #include <getopt.h>
@@ -48,9 +49,11 @@ uint32_t vm_syscall(spu_t *process, cmdinput_t *info)
 		return 0;
 	case 1:
 		fprintf(stdout, "%c", info->input0);
+		fflush(stdout);
 		return 0;
 	case 2:
 		fprintf(stdout, "%d", info->input0);
+		fflush(stdout);
 		return 0;
 	default:
 		fprintf(
@@ -108,7 +111,8 @@ void device_interrupt_callback(struct device *device, uint32_t interrupt)
 
 void dump_vm()
 {
-	fprintf(stderr,
+	int width = 0;
+	width += fprintf(stderr,
 		"cp=%8X bp=%3d f=%1X [",
 		mainCore.codePointer,
 		mainCore.basePointer,
@@ -117,10 +121,17 @@ void dump_vm()
 
 	for (uint32_t i = 0; i <= mainCore.stackPointer; i++)
 	{
-		fprintf(stderr, " %d", mainCore.stack[i]);
+		width += fprintf(stderr, " %d", mainCore.stack[i]);
 	}
 
-	fprintf(stderr, " ]\n");
+	width += fprintf(stderr, " ] ");
+	
+	const char *padding = "                                                  ";
+	if(width < strlen(padding))
+		fprintf(stderr, "%s", &padding[width]);
+	
+	instruction_t *instr = (uint8_t*)mainCore.memory + (mainCore.codePointer << 3);
+	disassemble(instr, 1, mainCore.codePointer, stderr);
 }
 
 void update_vm()
@@ -174,6 +185,7 @@ void initialize_vm()
 
 void load_section(const expsection_t * section, FILE *f)
 {
+	fprintf(stderr, "Loading %s to 0x%X\n", section->name, section->base);
 	uint8_t *sectionInRam = (uint8_t*)mainCore.memory + section->base;
 	int len = fread(sectionInRam, 1, section->length, f);
 	if (len != section->length)

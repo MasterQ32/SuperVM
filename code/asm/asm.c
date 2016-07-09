@@ -21,6 +21,7 @@ sectlist_t *currentSection = NULL;
 llist_t *labels = NULL;
 llist_t *variables = NULL;
 llist_t *patches = NULL;
+llist_t *vpatches = NULL;
 
 FILE *output = NULL;
 
@@ -83,9 +84,7 @@ int main(int argc, char **argv)
 	
 	for (int index = optind; index < argc; index++)
 	{
-		fprintf(stderr, "Assembling %s\n", argv[index]);
 		process(argv[index]);
-		fprintf(stderr, "? %d\n", currentSection->section.length);
 	}
 	
 	header.posSections = ftell(output);
@@ -109,6 +108,23 @@ int main(int argc, char **argv)
 		if(listFound == 0)
 		{
 			fprintf(stderr, "Could not find label %s.\n", it->name);
+			exit(1);
+		}
+		
+		// Seek to the target address
+		fseek(output, it->value, SEEK_SET);
+		fwrite(&target, 1, sizeof(uint32_t), output);
+		
+		printf("%d -> %d (%s)\n", it->value, target, it->name);
+	}
+	
+	printf("Variable Patches:\n");
+	for(llist_t *it = vpatches; it != NULL; it = it->next)
+	{
+		uint32_t target = list_find(&variables, it->name);
+		if(listFound == 0)
+		{
+			fprintf(stderr, "Could not find variable %s.\n", it->name);
 			exit(1);
 		}
 		

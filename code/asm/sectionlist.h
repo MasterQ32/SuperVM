@@ -23,6 +23,7 @@ extern sectlist_t *currentSection;
 extern llist_t *labels;
 extern llist_t *variables;
 extern llist_t *patches;
+extern llist_t *vpatches;
 
 extern int listFound ;
 

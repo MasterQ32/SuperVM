@@ -26,7 +26,7 @@ start:
 	
 	out 0x10002 ; Timer Limit
 	
-	push $strFreq 
+	push $strHz
 	cpget
 	jmp @puts
 	drop
@@ -44,7 +44,7 @@ int_timer:
 	[i0:peek] syscall [ci:2]
 	[i0:arg] add 1
 	store32 $iCounter
-	
+
 	push $strTicks
 	cpget
 	jmp @puts

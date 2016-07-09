@@ -69,7 +69,7 @@ static const char * lastError = NULL;
 
 static void error(const char *currentFileName, const char *msg, ...)
 {
-	fprintf(stderr, "%s:%d: Error: ", currentFileName, yylineno - 1);
+	fprintf(stderr, "%s:%d: Error: ", currentFileName, yylineno);
 	
   va_list args;
   va_start (args, msg);
@@ -83,7 +83,7 @@ static void error(const char *currentFileName, const char *msg, ...)
 
 static void warning(const char *currentFileName, const char *msg, ...)
 {
-	fprintf(stderr, "%s:%d: Warning: ", currentFileName, yylineno - 1);
+	fprintf(stderr, "%s:%d: Warning: ", currentFileName, yylineno);
 	
   va_list args;
   va_start (args, msg);
@@ -141,9 +141,9 @@ void apply_modifiers(int *tok, instruction_t *i)
 
 uint32_t getNum(const char *text)
 {
-	if(text[2] == 'x')
+	if(text[1] == 'x')
 		return (uint32_t)strtol(text, NULL, 16);
-	else if(text[2] == 'b')
+	else if(text[1] == 'b')
 		return (uint32_t)strtol(text + 2, NULL, 2);
 	else
 		return (uint32_t)atoi(yytext);
@@ -156,11 +156,13 @@ void read_instruction(const char *fileName, int tok)
 		int len = strlen(yytext);
 		yytext[len - 1] = '\0'; // remove colon
 
-		if((currentSection->section.length & 0xFFFFFFF8) != currentSection->section.length)
+		uint32_t addr = currentSection->section.base + currentSection->section.length;
+		
+		if((addr & 0xFFFFFFF8) != addr)
 		{
 			warning(fileName, "Label '%s' is misaligned.", yytext);
 		}
-		list_insert(&labels, yytext, currentSection->section.length);
+		list_insert(&labels, yytext, addr);
 		
 		tok = yylex();
 	}
@@ -233,7 +235,17 @@ void read_instruction(const char *fileName, int tok)
 				break;
 			case TOK_VAR:
 			{
-				error(fileName, "Variables are not supported yet.");
+				// (yytext + 1) removes the leading $
+				// check if we already had a variable with this name
+				uint32_t target = list_find(&variables, yytext + 1);
+				if(listFound)
+					current.argument = target;
+				else {
+					// insert patch here for deferred argument modification
+					// store the exact position in the file for the patch
+					list_insert(&vpatches, yytext + 1, ftell(output) + 4);
+					reqPatch = 1;
+				}
 				break;
 			}
 			case TOK_REFERENCE:
@@ -307,6 +319,11 @@ void read_variable(const char *fileName)
 	else if(strcmp(yytext, "LSTRING") == 0) {
 		type = 9;
 	}
+	
+	list_insert(
+		&variables, 
+		name, 
+		currentSection->section.base + currentSection->section.length);
 	
 	switch(type)
 	{
