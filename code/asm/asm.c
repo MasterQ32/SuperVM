@@ -84,7 +84,10 @@ int main(int argc, char **argv)
 	
 	for (int index = optind; index < argc; index++)
 	{
-		process(argv[index]);
+		if(process(argv[index]) == false) {
+			fprintf(stderr, "%s: Failed to assemble %s.\n", argv[0], argv[index]);
+			exit(1);
+		}
 	}
 	
 	header.posSections = ftell(output);
@@ -101,7 +104,6 @@ int main(int argc, char **argv)
 	fseek(output, 0, SEEK_SET);
 	fwrite(&header, sizeof(expfile_t), 1, output);
 	
-	printf("Patches:\n");
 	for(llist_t *it = patches; it != NULL; it = it->next)
 	{
 		uint32_t target = addrToInstr(list_find(&labels, it->name));
@@ -114,11 +116,8 @@ int main(int argc, char **argv)
 		// Seek to the target address
 		fseek(output, it->value, SEEK_SET);
 		fwrite(&target, 1, sizeof(uint32_t), output);
-		
-		printf("%d -> %d (%s)\n", it->value, target, it->name);
 	}
 	
-	printf("Variable Patches:\n");
 	for(llist_t *it = vpatches; it != NULL; it = it->next)
 	{
 		uint32_t target = list_find(&variables, it->name);
@@ -131,8 +130,6 @@ int main(int argc, char **argv)
 		// Seek to the target address
 		fseek(output, it->value, SEEK_SET);
 		fwrite(&target, 1, sizeof(uint32_t), output);
-		
-		printf("%d -> %d (%s)\n", it->value, target, it->name);
 	}
 	
 	fflush(output);

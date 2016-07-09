@@ -283,6 +283,34 @@ void read_instruction(const char *fileName, int tok)
 	currentSection->section.length += fwrite(&current, 1, sizeof(instruction_t), output);
 }
 
+void unescape(char *str)
+{
+	char *wptr = str;
+	char *rptr = str;
+	
+	while(*rptr)
+	{
+		if(*rptr != '\\') {
+			*wptr++ = *rptr++;
+			continue;
+		}
+		rptr++;
+		switch(*rptr)
+		{
+			case '\\': *wptr++ = '\\'; break;
+			case '\"': *wptr++ = '\"'; break;
+			case '\'': *wptr++ = '\''; break;
+			case 't': *wptr++ = '\t'; break;
+			case 'v': *wptr++ = '\v'; break;
+			case 'n': *wptr++ = '\n'; break;
+			case 'r': *wptr++ = '\r'; break;
+			default: *wptr++ = *rptr; break;
+		}
+		rptr++;
+	}
+	*wptr = 0;
+}
+
 void read_variable(const char *fileName)
 {
 	char name[64];
@@ -360,6 +388,10 @@ void read_variable(const char *fileName)
 			char *value = yytext + 1;
 			int len = strlen(value) - 1;
 			value[len] = 0;
+			
+			unescape(value);
+			len = strlen(value);
+			
 			fwrite(value, len, 1, output);
 			currentSection->section.length += len;
 			break;
@@ -370,6 +402,10 @@ void read_variable(const char *fileName)
 			char *value = yytext + 1;
 			int len = strlen(value) - 1;
 			value[len] = 0;
+			
+			unescape(value);
+			len = strlen(value);
+			
 			fwrite(value, len + 1, 1, output);
 			currentSection->section.length += (len + 1);
 			break;
@@ -380,6 +416,10 @@ void read_variable(const char *fileName)
 			char *value = yytext + 1;
 			uint32_t len = strlen(value) - 1;
 			value[len] = 0;
+			
+			unescape(value);
+			len = strlen(value);
+			
 			fwrite(&len, 4, 1, output);
 			fwrite(value, len, 1, output);
 			currentSection->section.length += (len + 4);
