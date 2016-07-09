@@ -6,8 +6,8 @@ Does nothing.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |          zero |
-| Input 1   |          zero |
+| Input 0,1 |     zero,zero |
+| Command   |       copy(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -17,8 +17,8 @@ Pushes $arg on the stack.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |          zero |
+| Input 0,1 | argument,zero |
+| Command   |       copy(0) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -28,8 +28,8 @@ Removes the top value from the stack.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |          zero |
+| Input 0,1 |      pop,zero |
+| Command   |       copy(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -39,8 +39,8 @@ Duplicates the top value of the stack.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |          peek |
-| Input 1   |          zero |
+| Input 0,1 |     peek,zero |
+| Command   |       copy(0) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -50,8 +50,8 @@ Jumps to the command at index $arg.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |          zero |
+| Input 0,1 | argument,zero |
+| Command   |       copy(0) |
 | Result    |          jump |
 | Set Flags |            no |
 
@@ -61,8 +61,8 @@ Pops an index from the stack and jumps to it.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |          zero |
+| Input 0,1 |      pop,zero |
+| Command   |       copy(0) |
 | Result    |          jump |
 | Set Flags |            no |
 
@@ -72,8 +72,8 @@ Returns from a function. Is exactly the same as `jmpi`, but is ment for returnin
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |          zero |
+| Input 0,1 |      pop,zero |
+| Command   |       copy(0) |
 | Result    |          jump |
 | Set Flags |            no |
 
@@ -83,8 +83,8 @@ Loads a byte (8 bit) from $arg.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |          zero |
+| Input 0,1 | argument,zero |
+| Command   |       load(0) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -94,8 +94,8 @@ Loads a half world (16 bit) from $arg.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |          zero |
+| Input 0,1 | argument,zero |
+| Command   |       load(1) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -105,8 +105,8 @@ Loads a word (32 bit) from $arg.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |          zero |
+| Input 0,1 | argument,zero |
+| Command   |       load(2) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -116,8 +116,8 @@ Pops an address from the stack and loads the byte (8 bit) located at the popped 
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |          zero |
+| Input 0,1 |      pop,zero |
+| Command   |       load(0) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -127,8 +127,8 @@ Pops an address from the stack and loads the half world (16 bit) located at the 
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |          zero |
+| Input 0,1 |      pop,zero |
+| Command   |       load(1) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -138,8 +138,8 @@ Pops an address from the stack and loads the word (32 bit) located at the popped
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |          zero |
+| Input 0,1 |      pop,zero |
+| Command   |       load(2) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -149,8 +149,8 @@ Pops a value and stores it as a byte (8 bit) at $arg.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |      store(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -160,8 +160,8 @@ Pops a value and stores it as a half word (16 bit) at $arg.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |      store(1) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -171,8 +171,8 @@ Pops a value and stores the word (32 bit) at $arg.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |      store(2) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -182,8 +182,8 @@ First pops an address from the stack, then a value. Then stores the value as a b
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |      store(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -193,8 +193,8 @@ First pops an address from the stack, then a value. Then stores the value as a h
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |      store(1) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -204,8 +204,8 @@ First pops an address from the stack, then a value. Then stores the value (32 bi
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |      store(2) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -215,8 +215,8 @@ First pops an address from the stack, then a value. Then stores the value (32 bi
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |          zero |
+| Input 0,1 | argument,zero |
+| Command   |        get(0) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -226,8 +226,8 @@ First pops an address from the stack, then a value. Then stores the value (32 bi
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |          zero |
+| Input 0,1 |      pop,zero |
+| Command   |        get(0) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -237,8 +237,8 @@ First pops an address from the stack, then a value. Then stores the value (32 bi
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |        set(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -248,8 +248,8 @@ First pops an address from the stack, then a value. Then stores the value (32 bi
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |        set(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -259,8 +259,8 @@ Pushes the current base pointer to the stack.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |          zero |
-| Input 1   |          zero |
+| Input 0,1 |     zero,zero |
+| Command   |      bpget(0) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -270,8 +270,8 @@ Pops a value into the base pointer.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |          zero |
+| Input 0,1 |      pop,zero |
+| Command   |      bpset(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -281,8 +281,8 @@ Pushes the current stack pointer to the stack.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |          zero |
-| Input 1   |          zero |
+| Input 0,1 |     zero,zero |
+| Command   |      spget(0) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -292,8 +292,8 @@ Pops a value into the stack pointer.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |          zero |
+| Input 0,1 |      pop,zero |
+| Command   |      spset(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -303,8 +303,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |          zero |
-| Input 1   |          zero |
+| Input 0,1 |     zero,zero |
+| Command   |      cpget(1) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -314,8 +314,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |       math(0) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -325,8 +325,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |       math(1) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -336,8 +336,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |       math(1) |
 | Result    |       discard |
 | Set Flags |           yes |
 
@@ -347,8 +347,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |       math(1) |
 | Result    |       discard |
 | Set Flags |           yes |
 
@@ -358,8 +358,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |       math(2) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -369,8 +369,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |       math(3) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -380,8 +380,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |       math(4) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -391,8 +391,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |       math(5) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -402,8 +402,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |       math(6) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -413,8 +413,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |           pop |
+| Input 0,1 |       pop,pop |
+| Command   |       math(7) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -424,8 +424,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |           pop |
-| Input 1   |          zero |
+| Input 0,1 |      pop,zero |
+| Command   |       math(8) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -435,8 +435,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |       math(9) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -446,8 +446,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |      math(10) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -457,8 +457,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |      math(11) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -468,8 +468,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |      math(12) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -479,8 +479,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |      math(13) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -490,8 +490,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |      math(14) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -501,8 +501,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |          zero |
-| Input 1   |          zero |
+| Input 0,1 |     zero,zero |
+| Command   |    syscall(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -512,8 +512,8 @@ Pushes the current code pointer incremented by one. This allows pushing return v
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |          zero |
-| Input 1   |          zero |
+| Input 0,1 |     zero,zero |
+| Command   |       hwio(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -523,8 +523,8 @@ Raises the interrupt $arg.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |          zero |
+| Input 0,1 | argument,zero |
+| Command   |        int(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -534,8 +534,8 @@ Sets the interrupt flag and thus enables interrupts.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |          zero |
-| Input 1   |          zero |
+| Input 0,1 |     zero,zero |
+| Command   |        sei(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -545,8 +545,8 @@ Clears the interrupt flag and thus disables interrupts.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |          zero |
-| Input 1   |          zero |
+| Input 0,1 |     zero,zero |
+| Command   |        cli(0) |
 | Result    |       discard |
 | Set Flags |            no |
 
@@ -556,8 +556,8 @@ Reads a word from the port $arg.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |          zero |
+| Input 0,1 | argument,zero |
+| Command   |       hwio(0) |
 | Result    |          push |
 | Set Flags |            no |
 
@@ -567,8 +567,8 @@ Pops a word and writes it to the port $arg.
 | Property  | Configuration |
 |-----------|---------------|
 | Execution |        always |
-| Input 0   |      argument |
-| Input 1   |           pop |
+| Input 0,1 |  argument,pop |
+| Command   |       hwio(1) |
 | Result    |       discard |
 | Set Flags |            no |
 
