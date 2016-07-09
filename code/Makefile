@@ -8,4 +8,4 @@ dirs:
 	mkdir -p obj/devices/
 
 $(PROJECTS):
-	make -C $@
+	$(MAKE) -C $@
