@@ -11,12 +11,18 @@ struct device
 	char name[128];
 
 	/**** Interaction API ****/
+	
 	// Write to a register
 	void (*write)(struct device *device, uint16_t reg, uint32_t value); 
+	
 	// Read from a register
 	uint32_t(*read)(struct device *device, uint16_t reg);
+	
 	// Update the device.
 	void(*update)(struct device *device);
+	
+	// Shuts down the device
+	void(*shutdown)(struct device *device);
 
 	union {
 		void *tagPtr;

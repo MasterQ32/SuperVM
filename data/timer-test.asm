@@ -22,8 +22,8 @@ start:
 	drop
 	
 	in 0x10000
-	[i0:peek] syscall [ci:2]
-	
+	cpget
+	jmp @puti	
 	out 0x10002 ; Timer Limit
 	
 	push $strHz
@@ -41,7 +41,8 @@ mainloop:
 int_timer:
 	
 	load32 $iCounter
-	[i0:peek] syscall [ci:2]
+	cpget
+	jmp @puti
 	[i0:arg] add 1
 	store32 $iCounter
 

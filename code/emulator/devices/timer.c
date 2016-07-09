@@ -57,6 +57,7 @@ device_t *devtimer_create()
 	strcpy(timer->device.name, "Timer v1.0");
 
 	timer->device.update = (void(*)(device_t*))timer_update;
+	timer->device.shutdown = NULL;
 	timer->device.read = (uint32_t(*)(device_t*,uint16_t))timer_read;
 	timer->device.write = (void(*)(device_t*, uint16_t, uint32_t))timer_write;
 
