@@ -12,6 +12,7 @@
 :VAR  strHz           ZSTRING   " Hz\n"
 :VAR  strFreq         ZSTRING   "Timer Frequency: "
 :VAR  strTicks        ZSTRING   " ticks\n"
+:VAR  image						FILE			"image.raw" ; 92×92 pixel
 
 ; valid types are:
 ; INT8     signed 8 bit integer

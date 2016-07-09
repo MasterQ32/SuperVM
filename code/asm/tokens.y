@@ -347,6 +347,9 @@ void read_variable(const char *fileName)
 	else if(strcmp(yytext, "LSTRING") == 0) {
 		type = 9;
 	}
+	else if(strcmp(yytext, "FILE") == 0) {
+		type = 10;
+	}
 	
 	list_insert(
 		&variables, 
@@ -423,6 +426,39 @@ void read_variable(const char *fileName)
 			fwrite(&len, 4, 1, output);
 			fwrite(value, len, 1, output);
 			currentSection->section.length += (len + 4);
+			break;
+		}
+		case 10: // FILE
+		{
+			assert_tok(fileName, TOK_STR);
+			char *value = yytext + 1;
+			uint32_t len = strlen(value) - 1;
+			value[len] = 0;
+			
+			unescape(value);
+			len = strlen(value);
+			
+			char *fname = makeIncludeRelative(fileName, value);
+		
+			FILE *f = fopen(fname, "rb");
+			if(f == NULL) {
+				error(fileName, "Could not find file %s", fname);
+			}
+			
+			while(!feof(f))
+			{
+				uint8_t buffer[4096];
+				int len = fread(buffer, 1, 4096, f);
+				if(f == 0) break;
+				fwrite(buffer, 1, len, output);
+				currentSection->section.length += len;
+			}
+			
+			fprintf(stdout, "%d\n", ftell(f));
+	
+			fclose(f);
+			free(fname);
+		
 			break;
 		}
 		default:
