@@ -5,6 +5,7 @@
 #include "exp.h"
 #include "devices/timer.h"
 #include "devices/serial.h"
+#include "devices/gpu.h"
 #include "disassembler.h"
 
 #include <stdbool.h>
@@ -117,6 +118,7 @@ void initialize_vm()
 	setup_device(1, 1, devtimer_create());
 	setup_device(2, 2, devserial_create(1));
 	setup_device(3, 3, devserial_create(2));
+	setup_device(4, 4, devgpu_create());
 }
 
 void load_section(const expsection_t * section, FILE *f)
@@ -135,6 +137,7 @@ void shutdown_devices()
 	{
 		if(devices[i] != NULL) {
 			if(devices[i]->shutdown != NULL) {
+				fprintf(stderr, "Shutting down %s…\n", devices[i]->name);
 				devices[i]->shutdown(devices[i]);
 			}
 		}
@@ -146,9 +149,10 @@ char basePath[206];
 #include <signal.h>
 #include <unistd.h>
 
-void my_handler(int s){
-	printf("Caught signal %d\n",s);
-	exit(1); 
+void stop_emulation(int s)
+{
+	// Just set running to false, the system will then shut down
+	running = false;
 }
 
 extern bool autoSwapBuffers;
@@ -156,7 +160,7 @@ extern int executionsPerSimulationStep;
 
 int main(int argc, char **argv)
 {
-	signal (SIGINT,my_handler);
+	signal (SIGINT, stop_emulation);
 	atexit(shutdown_devices);
 	
 	// Required before ANY virtual machine memory operations...
@@ -211,10 +215,10 @@ int main(int argc, char **argv)
 
 	if (debugMode) dump_vm();
 
-	if (visualMode)
-		run_visual_mode();
-	else
-		run_text_mode();
+	// if (visualMode)
+	// 	run_visual_mode();
+	// else
+	run_text_mode();
 
 	return 0;
 }

@@ -36,3 +36,11 @@ struct device
 void device_interrupt_callback(struct device *device, uint32_t interrupt);
 
 typedef struct device device_t;
+
+// Fancy macro for simple device specification
+#define BEGIN_DEVICE(_DEVNAME_,...) typedef struct dev##_DEVNAME_ dev##_DEVNAME_##_t; \
+device_t *dev##_DEVNAME_##_create(__VA_ARGS__); \
+struct dev##_DEVNAME_ { \
+	device_t device
+
+#define END_DEVICE() }
