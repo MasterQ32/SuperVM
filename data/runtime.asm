@@ -29,7 +29,12 @@ puti:
 	bpset
 	get -2 ; num
 
-
+	push '0'
+	out 0x20000
+	push '0'
+	out 0x20000
+	push '0'
+	out 0x20000
 
 
 puti_end:

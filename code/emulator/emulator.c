@@ -96,7 +96,8 @@ void initialize_vm()
 	mainCore.memoryBase = 0x00; // Linear memory, start at 0x00
 	mainCore.memorySize = 0x4000000; // 64 MB;
 	mainCore.memory = malloc(mainCore.memorySize);
-
+	memset(mainCore.memory, 0, mainCore.memorySize);
+	
 	// Initialize code execution
 	mainCore.code = mainCore.memory;
 	mainCore.codeLength = mainCore.memorySize / sizeof(instruction_t);
