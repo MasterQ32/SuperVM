@@ -57,19 +57,15 @@ fn blit24(source : ptr, _x : int, _y : int, w : int, h : int)
 	var c : int;
 {
 	y := 0;
-	while(y < h) {
+	while(y != h) {
 		x := 0;
 		
-		while(x < w) {
-			// puti(x);
-			// putc(',');
-			// puti(y);
-			// putc('\n');
-			
-			c := read(source + conv(3 * ((y * w) + x) + 0));
-			c := c + 0x100 * read(source + conv(3 * ((y * w) + x) + 0));
-			c := c + 0x10000 * read(source + conv(3 * ((y * w) + x) + 0));
-			
+		while(x != w) {
+			c := 0;
+			c := 65536 * read8(source + conv(3 * (y*w + x) + 0));
+			c := c + 256 * read8(source + conv(3 * (y*w + x) + 1));
+			c := c + read8(source + conv(3 * (y*w + x) + 2));
+
 			write(getVideoBase() + conv(4 * ((y + _y) * width() + x + _x)), c);
 			
 			x := x + 1;
@@ -82,11 +78,18 @@ fn blit24(source : ptr, _x : int, _y : int, w : int, h : int)
 
 fn main()
 {
-	blit24(getImage(), 32, 32, 160, 120);
+			blit24(getImage(),  32, 32, 160, 120);
+	fastBlit24(getImage(), 200, 32, 160, 120);
 	while(1) { }
 }
 
 inline fn getImage() -> ptr
 [[
 	push $isometric
+]]
+
+inline fn fastBlit24(source : ptr, _x : int, _y : int, w : int, h : int)
+[[
+	cpget 
+	jmp @fast_blit24
 ]]
