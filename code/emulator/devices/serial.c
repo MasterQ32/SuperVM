@@ -12,10 +12,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-			 
-struct remote {
-	int sock;
-};
 
 static bool serial_select(int sock, int mode)
 {
@@ -59,7 +55,10 @@ static uint32_t serial_read(devserial_t *serial, uint16_t reg)
 	{
 	case SERIAL_REG_DATA: 
 		if(serial->remote >= 0 && serial_select(serial->remote, 0)) {
-			read(serial->remote, &bits, 1);
+			if(read(serial->remote, &bits, 1) <= 0) {
+				serial->remote = -1;
+				return -1;
+			}
 			return bits;
 		} else {
 			return -1;
@@ -77,7 +76,7 @@ static void serial_write(devserial_t *serial, uint16_t reg, uint32_t value)
 	case SERIAL_REG_DATA:
 		if(serial->remote >= 0) {
 			if(serial_select(serial->remote, 1)) {
-				if(write(serial->remote, &bits, 1) == 0) {
+				if(send(serial->remote, &bits, 1, MSG_NOSIGNAL) <= 0) {
 					serial->remote = -1;
 				}
 			}
@@ -92,12 +91,17 @@ static void serial_shutdown(devserial_t *serial)
 		close(serial->remote);
 	}
 	close(serial->sock);
+	
+#if defined(USE_UNIX_SOCKET)
+	unlink(serial->fileName);
+#endif
 }
 
 extern char basePath[];
 
-device_t *devserial_create()
+device_t *devserial_create(int portNum)
 {
+
 	devserial_t *serial = malloc(sizeof(devserial_t));
 	
 	strcpy(serial->device.name, "Serial Port v1.0");
@@ -107,6 +111,36 @@ device_t *devserial_create()
 	serial->device.write = (void(*)(device_t*, uint16_t, uint32_t))serial_write;
 
 	serial->remote = -1;
+	
+#if defined(USE_UNIX_SOCKET)
+
+	snprintf(serial->fileName, PATH_MAX, "./COM%d", portNum);
+
+	unlink(serial->fileName);
+
+	serial->sock = socket(AF_UNIX, SOCK_STREAM, 0);
+	if(serial->sock == -1) {
+		fprintf(stderr, "failed to create socket.\n");
+	}
+	
+	struct sockaddr_un addr;
+	memset(&addr, 0, sizeof(struct sockaddr_un));
+
+	/* Bind socket to socket name. */
+
+	addr.sun_family = AF_UNIX;
+	strncpy(addr.sun_path, serial->fileName, sizeof(addr.sun_path) - 1);  			      /* set the server port number */ 
+	
+	if (bind(serial->sock, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
+		fprintf(stderr, "failed to bind socket.\n");
+	};
+	
+	if (listen(serial->sock, 10) == -1){
+		fprintf(stderr, "failed to listen.\n");
+	}
+	
+	fprintf(stdout, "Serial port listening on %s\n", serial->fileName);
+#else
 	serial->sock = socket(AF_INET, SOCK_STREAM, 0);
 	if(serial->sock == -1) {
 		fprintf(stderr, "failed to create socket.\n");
@@ -138,6 +172,7 @@ device_t *devserial_create()
 	fprintf(stdout, "Serial port listening on %s:%d\n", 
 		inet_ntoa(my_addr.sin_addr),
 		ntohs(my_addr.sin_port));
-	
+#endif
+
 	return &serial->device;
 }

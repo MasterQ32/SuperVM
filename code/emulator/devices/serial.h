@@ -6,7 +6,8 @@
 #define SERIAL_REG_DATA 0
 #define SERIAL_REG_STATUS 1
 
-#define SERIAL_BUFFER_SIZE 32
+// set or unset
+#define USE_UNIX_SOCKET
 
 struct devserial
 {
@@ -14,8 +15,12 @@ struct devserial
 
 	int sock;
 	int remote;
+	
+#if defined(USE_UNIX_SOCKET)
+	char fileName[PATH_MAX];
+#endif
 };
 
 typedef struct devserial devserial_t;
 
-device_t *devserial_create();
+device_t *devserial_create(int portNum);

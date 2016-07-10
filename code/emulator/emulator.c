@@ -114,7 +114,8 @@ void initialize_vm()
 
 	// Timer Device with IO Base 0x10000
 	setup_device(1, 1, devtimer_create());
-	setup_device(2, 2, devserial_create());
+	setup_device(2, 2, devserial_create(1));
+	setup_device(3, 3, devserial_create(2));
 }
 
 void load_section(const expsection_t * section, FILE *f)
