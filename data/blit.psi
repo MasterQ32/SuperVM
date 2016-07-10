@@ -1,0 +1,92 @@
+
+
+
+inline fn width() -> int
+[[
+	in 0x40001
+]]
+
+inline fn height() -> int
+[[
+	in 0x40002
+]]
+
+
+inline fn exit(i : int)
+[[
+	syscall [i0:pop] [ci:0]
+]]
+
+inline fn putc(i : int)
+[[
+	syscall [i0:pop] [ci:1]
+]]
+
+inline fn puti(i : int)
+[[
+	syscall [i0:pop] [ci:2]
+]]
+
+inline fn getVideoBase() -> ptr
+[[
+	in 0x40004
+]]
+
+inline fn conv(i : int) -> ptr
+[[
+
+]]
+
+inline fn write(addr : ptr, v : int)
+[[
+	store32i
+]]
+
+inline fn read(addr : ptr) -> int
+[[
+	load32i
+]]
+inline fn read8(addr : ptr) -> int
+[[
+	load8i
+]]
+
+fn blit24(source : ptr, _x : int, _y : int, w : int, h : int)
+	var x : int;
+	var y : int;
+	var c : int;
+{
+	y := 0;
+	while(y < h) {
+		x := 0;
+		
+		while(x < w) {
+			// puti(x);
+			// putc(',');
+			// puti(y);
+			// putc('\n');
+			
+			c := read(source + conv(3 * ((y * w) + x) + 0));
+			c := c + 0x100 * read(source + conv(3 * ((y * w) + x) + 0));
+			c := c + 0x10000 * read(source + conv(3 * ((y * w) + x) + 0));
+			
+			write(getVideoBase() + conv(4 * ((y + _y) * width() + x + _x)), c);
+			
+			x := x + 1;
+		}
+		// puti(y);
+		// putc('\n');
+		y := y + 1;
+	}
+}
+
+fn main()
+{
+	blit24(getImage(), 32, 32, 160, 120);
+	while(1) { }
+}
+
+inline fn getImage() -> ptr
+[[
+	push $isometric
+]]

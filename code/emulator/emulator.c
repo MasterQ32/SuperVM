@@ -251,12 +251,12 @@ uint32_t vm_syscall(spu_t *process, cmdinput_t *info)
 		running = false;
 		return 0;
 	case 1:
-		// fprintf(stdout, "%c", info->input0);
-		// fflush(stdout);
+		fprintf(stdout, "%c", info->input0);
+		fflush(stdout);
 		return 0;
 	case 2:
-		// fprintf(stdout, "%d", info->input0);
-		// fflush(stdout);
+		fprintf(stdout, "%d", info->input0);
+		fflush(stdout);
 		return 0;
 	default:
 		fprintf(

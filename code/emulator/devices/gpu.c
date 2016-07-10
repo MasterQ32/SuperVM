@@ -27,13 +27,7 @@ static void dev_write(devlocal_t *device, uint16_t reg, uint32_t value)
 }
 
 static void dev_update(devlocal_t *device)
-{
-	SDL_Event ev;
-	SDL_PollEvent(&ev);
-	if(ev.type == SDL_QUIT) {
-		running = false;
-	}
-	
+{	
 	if(clock() > device->nextRefresh) {
 		/* copy memory here */
 		SDL_LockSurface(device->screen);
@@ -45,6 +39,12 @@ static void dev_update(devlocal_t *device)
 		
 		SDL_Flip(device->screen);
 		device->nextRefresh = clock() + device->refreshTime;
+		
+		SDL_Event ev;
+		SDL_PollEvent(&ev);
+		if(ev.type == SDL_QUIT) {
+			running = false;
+		}
 	}
 }
 
@@ -71,7 +71,7 @@ device_t *devgpu_create()
 	device->nextRefresh = clock();
 	device->refreshTime = CLOCKS_PER_SEC / 30; // 30 FPS
 	
-	device->screen = SDL_SetVideoMode(640, 480, 32, SDL_DOUBLEBUF);
+	device->screen = SDL_SetVideoMode(640, 480, 32, 0);
 	SDL_WM_SetCaption("DasOS Virtual Platform", NULL);
 	
 	return &device->device;

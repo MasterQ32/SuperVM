@@ -10,6 +10,7 @@
 	ret ; 7
 	ret ; 8
 
+; wait for incoming connection and input
 start:
 	in 0x20000 [f:yes] [r:discard]
 	[ex(n)=1] jmp @start
@@ -20,9 +21,26 @@ start:
 	drop
 
 	in 0x40001 ; Width
+	cpget
+	jmp @puti
+	drop
 	
-
-
+	push ' '
+	out 0x20000
+	
+	push 'x'
+	out 0x20000
+	
+	push ' '
+	out 0x20000
+	
+	in 0x40002 ; Height
+	cpget
+	jmp @puti
+	drop
+	
+	push '\n'
+	out 0x20000
 
 mainloop:
 	jmp @mainloop
