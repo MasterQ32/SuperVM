@@ -14,8 +14,6 @@ struct devserial
 
 	int sock;
 	int remote;
-	
-	char sockName[PATH_MAX];
 };
 
 typedef struct devserial devserial_t;

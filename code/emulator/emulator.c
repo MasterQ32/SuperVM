@@ -144,13 +144,6 @@ char basePath[206];
 #include <signal.h>
 #include <unistd.h>
 
-void shutdown_dir()
-{
-	if(rmdir(basePath) == -1) {
-		fprintf(stderr, "Failed to delete %s\n", basePath);
-	}
-}
-
 void my_handler(int s){
 	printf("Caught signal %d\n",s);
 	exit(1); 
@@ -162,14 +155,6 @@ extern int executionsPerSimulationStep;
 int main(int argc, char **argv)
 {
 	signal (SIGINT,my_handler);
-	 
-	sprintf(basePath, "/run/user/%d/emulator/%d/", getuid(), getpid());
-	if(mkdir(basePath, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1) {
-		fprintf(stderr, "Failed to create %s\n", basePath);
-		return 1;
-	}
-
-	atexit(shutdown_dir);
 	atexit(shutdown_devices);
 	
 	// Required before ANY virtual machine memory operations...
@@ -260,12 +245,12 @@ uint32_t vm_syscall(spu_t *process, cmdinput_t *info)
 		running = false;
 		return 0;
 	case 1:
-		fprintf(stdout, "%c", info->input0);
-		fflush(stdout);
+		// fprintf(stdout, "%c", info->input0);
+		// fflush(stdout);
 		return 0;
 	case 2:
-		fprintf(stdout, "%d", info->input0);
-		fflush(stdout);
+		// fprintf(stdout, "%d", info->input0);
+		// fflush(stdout);
 		return 0;
 	default:
 		fprintf(
