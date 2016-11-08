@@ -32,11 +32,14 @@ int main(int argc, char **argv)
 	int dumpMetas = 0;
 	int disassembleSections = 0;
 
+	char * binfile = NULL;
+	
 	int c;
-	while ((c = getopt(argc, argv, "HsmdD")) != -1)
+	while ((c = getopt(argc, argv, "o:HsmdD")) != -1)
 	{
 		switch (c)
 		{
+		case 'o': binfile = optarg; break;
 		case 'H': headers = 1; break;
 		case 's': dumpSections = 1; break;
 		case 'm': dumpMetas = 1; break;
@@ -55,10 +58,84 @@ int main(int argc, char **argv)
 		}
 	}
 	
-	if(!headers && !dumpSections && !dumpMetas && !disassembleSections) {
+	if(!binfile && !headers && !dumpSections && !dumpMetas && !disassembleSections) {
 		headers = 1;
 	}
 	
+	if(binfile && optind < argc)
+	{
+		const char *fileName = argv[optind];
+		FILE *f = fopen(fileName, "rb");
+		if (f == NULL)
+		{
+			fprintf(stderr, "Could not open file %s\n", fileName);
+			return 1;
+		}
+		
+		expfile_t fileHeader;
+
+		if (fread(&fileHeader, 1, sizeof(expfile_t), f) != sizeof(expfile_t))
+		{
+			fprintf(stderr, "File %s does not contain a valid header.\n", fileName);
+			return 1;
+		}
+		if (fileHeader.magicNumber != EXP_MAGIC)
+		{
+			fprintf(stderr, "Invalid magic in %s\n", fileName);
+			return 1;
+		}
+		if (fileHeader.majorVersion != 1 && fileHeader.minorVersion == 0)
+		{
+			fprintf(
+				stderr, "Invalid version %s: %d.%d\n",
+				fileName,
+				fileHeader.majorVersion, fileHeader.minorVersion);
+			return 1;
+		}
+		
+		size_t flatlen = 0;
+		for (int i = 0; i < fileHeader.numSections; i++)
+		{
+			expsection_t section;
+			fseek(f, fileHeader.posSections + i * sizeof(expsection_t), SEEK_SET);
+			fread(&section, 1, sizeof(expsection_t), f);
+			
+			size_t len = section.base + section.length;
+			if(len > flatlen)
+				flatlen = len;
+		}
+		
+		if(flatlen == 0)
+		{
+			fprintf(stderr, "File does not contain any data.\n");
+			return 1;
+		}
+		
+		char * data = malloc(flatlen);
+		
+		for (int i = 0; i < fileHeader.numSections; i++)
+		{
+			expsection_t section;
+			fseek(f, fileHeader.posSections + i * sizeof(expsection_t), SEEK_SET);
+			fread(&section, 1, sizeof(expsection_t), f);
+			
+			fseek(f, section.start, SEEK_SET);
+			int len = fread(data + section.base, 1, section.length, f);
+			if (len != section.length)
+				fprintf(stderr, "Read invalid size.\n");
+		}
+		
+		FILE *out = fopen(binfile, "wb");
+		fwrite(data, 1, flatlen, out);
+		fflush(out);
+		fclose(out);
+		
+		free(data);
+		
+		fclose(f);
+		
+		return 0;
+	}
 	
 	for (int index = optind; index < argc; index++)
 	{
