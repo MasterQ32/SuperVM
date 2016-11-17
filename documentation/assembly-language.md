@@ -94,6 +94,7 @@ The following table lists all possible primitive attributes an instruction can h
 | `r:discard` | Sets the output mode to *discard*.                 |
 | `r:push`    | Sets the output mode to *push*.                    |
 | `r:jump`    | Sets the output mode to *jump*.                    |
+| `r:jumpr`   | Sets the output mode to *jumpr*.                   |
 | `i0:zero`   | Sets input0 to *zero*.                             |
 | `i0:pop`    | Sets input0 to *pop value*.                        |
 | `i0:peek`   | Sets input0 to *peek value*.                       |

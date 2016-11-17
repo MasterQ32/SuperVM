@@ -143,6 +143,10 @@ const mnemonic_t mnemonics[] =
 		{ VM_EXEC_X, VM_EXEC_X, VM_INPUT_POP, VM_INPUT_POP, VM_CMD_MATH, 4, VM_FLAG_NO, VM_OUTPUT_PUSH } 
 	},
 	{ 
+		"neg", "", 
+		{ VM_EXEC_X, VM_EXEC_X, VM_INPUT_POP, VM_INPUT_ZERO, VM_CMD_MATH, 15, VM_FLAG_NO, VM_OUTPUT_PUSH }
+	},
+	{ 
 		"and", "",
 		{ VM_EXEC_X, VM_EXEC_X, VM_INPUT_POP, VM_INPUT_POP, VM_CMD_MATH, 5, VM_FLAG_NO, VM_OUTPUT_PUSH }
 	},
